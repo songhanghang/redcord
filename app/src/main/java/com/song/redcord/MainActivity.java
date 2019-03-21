@@ -1,49 +1,72 @@
 package com.song.redcord;
 
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.amap.api.maps2d.MapView;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapOptions;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.MyLocationStyle;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener{
 
-    MapView mMapView = null;
+    private MapView mMapView;
+    private AMap mAMap;
+    private Us mUs = new Us();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //获取地图控件引用
-        mMapView = (MapView) findViewById(R.id.map);
-        //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
+        mMapView = findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
+
+        if (mAMap == null) {
+            mAMap = mMapView.getMap();
+        }
+        MyLocationStyle myLocationStyle = new MyLocationStyle();
+        myLocationStyle.interval(2000);
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
+        mAMap.setMyLocationStyle(myLocationStyle);
+        mAMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mAMap.getUiSettings().setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);
+        mAMap.setMyLocationEnabled(true);
+        mAMap.setOnMyLocationChangeListener(this);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
         mMapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onMyLocationChange(Location location) {
+        mUs.update(location, new Runnable() {
+            @Override
+            public void run() {
+                mUs.limitUsBound(mAMap);
+            }
+        });
     }
 }
