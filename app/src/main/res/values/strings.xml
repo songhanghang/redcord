@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">redcord</string>
+    <string name="app_need_location">没有权限，无法为连接您的TA</string>
 </resources>
