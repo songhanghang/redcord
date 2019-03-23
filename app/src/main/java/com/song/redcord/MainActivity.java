@@ -5,68 +5,55 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.MapView;
-import com.amap.api.maps.model.MyLocationStyle;
+import com.song.redcord.bean.Me;
+import com.song.redcord.map.Maper;
 
-public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener{
+public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener {
 
-    private MapView mMapView;
-    private AMap mAMap;
-    private Us mUs = new Us();
+    private MapView mapView;
+    private Me me;
+    private AMap aMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mMapView = findViewById(R.id.map);
-        mMapView.onCreate(savedInstanceState);
-
-        if (mAMap == null) {
-            mAMap = mMapView.getMap();
+        mapView = findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        if (aMap == null) {
+            aMap = mapView.getMap();
         }
-        MyLocationStyle myLocationStyle = new MyLocationStyle();
-        myLocationStyle.interval(2000);
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
-        mAMap.setMyLocationStyle(myLocationStyle);
-        mAMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mAMap.getUiSettings().setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);
-        mAMap.setMyLocationEnabled(true);
-        mAMap.setOnMyLocationChangeListener(this);
-
+        aMap.setOnMyLocationChangeListener(this);
+        me = new Me(new Maper(this, aMap));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        mapView.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mMapView.onResume();
+        mapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mMapView.onPause();
+        mapView.onPause();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
     }
 
     @Override
     public void onMyLocationChange(Location location) {
-        mUs.update(location, new Runnable() {
-            @Override
-            public void run() {
-                mUs.limitUsBound(mAMap);
-            }
-        });
+        me.update(location);
     }
 }
