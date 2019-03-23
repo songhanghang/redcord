@@ -1,26 +1,42 @@
 package com.song.redcord.bean;
 
 import android.location.Location;
-import com.song.redcord.map.Maper;
 
+import com.song.redcord.interfaces.OnDataUpdateListener;
+import com.song.redcord.interfaces.RequestCallback;
+
+/**
+ * 我的位置只上传不下载
+ * 你的位置只下载不上传
+ */
 public class Me extends Lover {
 
-    private final Maper maper;
+    public final Lover you = new You();
 
-    public Me(Maper maper) {
-        this.maper = maper;
+    private OnDataUpdateListener onDataUpdateListener;
+
+    public Me() {
+        this.name = "ME";
         this.loveId = "lover";
     }
 
-    private Lover you = new Lover() {
-        {
-            setLocation(33.789925, 104.838326);
-        }
-    };
+    public void setOnDataUpdateListener(OnDataUpdateListener onDataUpdateListener) {
+        this.onDataUpdateListener = onDataUpdateListener;
+    }
 
     @Override
-    public void pull(final Callback callback) {
-        Callback wrap = new Callback() {
+    public boolean ablePullLocation() {
+        return false;
+    }
+
+    @Override
+    public boolean ablePushLocation() {
+        return true;
+    }
+
+    @Override
+    public void pull(final RequestCallback callback) {
+        RequestCallback wrap = new RequestCallback() {
             @Override
             public void onCall() {
                 you.id = loveId;
@@ -33,10 +49,14 @@ public class Me extends Lover {
         super.pull(wrap);
     }
 
-    public void update(Location location) {
+    public void update(final Location location) {
         setLocation(location.getLatitude(), location.getLongitude());
-        push(null);
-        pullYou();
+        pull(new RequestCallback() {
+            @Override
+            public void onCall() {
+                push(null);
+            }
+        });
     }
 
     private void pullYou() {
@@ -44,7 +64,7 @@ public class Me extends Lover {
             return;
         }
 
-        you.pull(new Callback() {
+        you.pull(new RequestCallback() {
             @Override
             public void onCall() {
                 refreshMap();
@@ -56,6 +76,8 @@ public class Me extends Lover {
         if (isSingle()) {
             return;
         }
-        maper.refresh(location, you.location);
+        if (onDataUpdateListener != null) {
+            onDataUpdateListener.onUpdate();
+        }
     }
 }

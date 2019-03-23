@@ -3,32 +3,38 @@ package com.song.redcord.bean;
 import android.location.Location;
 import android.text.TextUtils;
 
+import com.song.redcord.interfaces.RequestCallback;
+
 public abstract class Lover implements DataServer {
 
-    protected String id;
-    protected String loveId;
+    public String id;
+    public String loveId;
+    public String name;
+    public final Location location = new Location("");
 
-    final Location location = new Location("");
+    public abstract boolean ablePullLocation();
+
+    public abstract boolean ablePushLocation();
 
     @Override
-    public void pull(Callback callback) {
+    public void pull(RequestCallback callback) {
         callback.onCall();
     }
 
 
     @Override
-    public void push(Callback callback) {
+    public void push(RequestCallback callback) {
 
     }
 
-
-
-    public boolean isSingle() {
+    boolean isSingle() {
         return TextUtils.isEmpty(loveId);
     }
 
-    public void setLocation(double lat, double lon) {
+    void setLocation(double lat, double lon) {
         location.setLatitude(lat);
         location.setLongitude(lon);
     }
+
+
 }

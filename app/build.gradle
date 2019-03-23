@@ -33,4 +33,5 @@ dependencies {
     implementation 'com.amap.api:search:latest.integration'
 
     implementation 'pub.devrel:easypermissions:2.0.1'
+    implementation 'com.android.support:cardview-v7:28+'
 }

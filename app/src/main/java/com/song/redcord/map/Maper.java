@@ -1,10 +1,8 @@
 package com.song.redcord.map;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
-import android.view.View;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
@@ -22,6 +20,8 @@ import com.amap.api.services.route.DriveRouteResult;
 import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
+import com.song.redcord.bean.Lover;
+import com.song.redcord.bean.Me;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -39,10 +39,9 @@ public class Maper {
     public Maper(Context context, AMap aMap) {
         this.context = context;
         this.aMap = aMap;
-        init();
     }
 
-    private void init() {
+    public void init() {
         MyLocationStyle myLocationStyle = new MyLocationStyle();
         myLocationStyle.interval(10000);
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
@@ -53,17 +52,14 @@ public class Maper {
         aMap.setMyLocationEnabled(true);
     }
 
-    public void refresh(Location me, Location you) {
-        Log.i(TAG, "me : " + me.getLatitude() + "    " + me.getLongitude());
-        Log.i(TAG, "you : " + you.getLatitude() + "    " + you.getLongitude());
+    public void refresh(Me me) {
+        Log.i(TAG, "me : " + me.location.getLatitude() + "    " + me.location.getLongitude());
+        Log.i(TAG, "you : " + me.you.location.getLatitude() + "    " + me.you.location.getLongitude());
 
-        LatLng melatl = new LatLng(me.getLatitude(), me.getLongitude());
-        LatLng youlatl = new LatLng(you.getLatitude(), you.getLongitude());
-
-        markUs(melatl, youlatl);
-        navigation(me, you);
+        markUs(me, me.you);
+        navigation(me.location, me.you.location);
         if (!hasScale.getAndSet(true)) {
-            scaleMap(melatl, youlatl);
+            scaleMap(me, me.you);
         }
 
     }
@@ -71,35 +67,37 @@ public class Maper {
     /**
      * 标记我俩
      */
-    private void markUs(LatLng me, LatLng you) {
+    private void markUs(Lover me, Lover you) {
+        LatLng melatl = new LatLng(me.location.getLatitude(), me.location.getLongitude());
+        LatLng youlatl = new LatLng(you.location.getLatitude(), you.location.getLongitude());
         MarkerOptions meOption = new MarkerOptions().icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                .position(me)
+                .position(melatl)
                 .draggable(false)
-                .title("Me");
+                .title(me.name);
         aMap.addMarker(meOption);
         MarkerOptions youOption = new MarkerOptions().icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                .position(you)
+                .position(youlatl)
                 .draggable(false)
-                .title("Love");
+                .title(you.name);
         aMap.addMarker(youOption).showInfoWindow();
     }
 
     /**
      * 显示我俩到地图中
      */
-    private void scaleMap(LatLng me, LatLng you) {
+    private void scaleMap(Lover me, Lover you) {
+        LatLng melatl = new LatLng(me.location.getLatitude(), me.location.getLongitude());
+        LatLng youlatl = new LatLng(you.location.getLatitude(), you.location.getLongitude());
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-        boundsBuilder.include(me);
-        boundsBuilder.include(you);
+        boundsBuilder.include(melatl);
+        boundsBuilder.include(youlatl);
         aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 300));
     }
 
     /**
      * 实现导航信息
-     * @param me
-     * @param you
      */
     private void navigation(Location me, Location you) {
         RouteSearch routeSearch = new RouteSearch(context);

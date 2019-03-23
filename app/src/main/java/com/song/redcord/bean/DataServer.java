@@ -1,6 +1,8 @@
 package com.song.redcord.bean;
 
+import com.song.redcord.interfaces.RequestCallback;
+
 public interface DataServer {
-    void pull(Callback callback);
-    void push(Callback callback);
+    void pull(RequestCallback callback);
+    void push(RequestCallback callback);
 }
