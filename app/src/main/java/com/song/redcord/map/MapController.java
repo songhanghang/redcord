@@ -26,6 +26,7 @@ import com.amap.api.services.route.WalkRouteResult;
 import com.song.redcord.bean.Lover;
 import com.song.redcord.bean.Me;
 import com.song.redcord.interfaces.LoverRefresh;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -74,7 +75,7 @@ public class MapController extends Controller implements AMapLocationListener {
 
             @Override
             public void deactivate() {
-                Log.i("songhang", "-=------ deactivate ");
+                Log.i("songhang", "-------- deactivate ");
                 if (locationClient != null) {
                     locationClient.stopLocation();
                     locationClient.onDestroy();
@@ -170,8 +171,13 @@ public class MapController extends Controller implements AMapLocationListener {
                     drivingRouteOverlay.addToMap();
                     int dis = (int) drivePath.getDistance();
                     int dur = (int) drivePath.getDuration();
-                    String des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")";
+                    Me.getInstance().you.driveInfo = "驾车 "
+                            + AMapUtil.getFriendlyTime(dur)
+                            + " | "
+                            + AMapUtil.getFriendlyLength(dis);
+                    Me.getInstance().you.notifyChange();
 
+                    String des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")";
                     Log.i("songhang", "des " + des);
                 }
             }
@@ -190,7 +196,7 @@ public class MapController extends Controller implements AMapLocationListener {
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation == null ) {
+        if (aMapLocation == null) {
             return;
         }
         if (aMapLocation.getErrorCode() != 0) {
