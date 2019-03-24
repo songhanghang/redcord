@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
-import com.song.redcord.bean.Me;
 import com.song.redcord.map.InfoController;
 import com.song.redcord.map.MapController;
 
@@ -16,13 +15,11 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener,
-        EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     private static final int RC_LOCATION_PERM = 1;
     private MapView mapView;
     private AMap aMap;
-    private Me me;
     private InfoController infoViewController;
     private MapController mapController;
 
@@ -37,9 +34,6 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         }
         infoViewController = new InfoController(findViewById(R.id.info));
         mapController = new MapController(this, aMap, infoViewController);
-        me = new Me();
-        me.setLoverRefresh(mapController);
-        aMap.setOnMyLocationChangeListener(this);
 
         EasyPermissions.requestPermissions(this,
                 getString(R.string.app_need_location),
@@ -69,11 +63,6 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onMyLocationChange(Location location) {
-        me.update(location);
     }
 
     @Override

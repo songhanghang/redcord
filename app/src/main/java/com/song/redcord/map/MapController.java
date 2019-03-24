@@ -52,6 +52,16 @@ public class MapController extends Controller<Me> {
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.getUiSettings().setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);
         aMap.setMyLocationEnabled(true);
+
+        final Me me = new Me();
+        me.setLoverRefresh(this);
+        aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                me.update(location);
+            }
+        });
+
     }
 
     @Override
