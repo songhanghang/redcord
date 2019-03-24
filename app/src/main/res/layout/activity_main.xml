@@ -13,7 +13,7 @@
         android:id="@+id/info"
         layout="@layout/info_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="314dp"
         android:layout_gravity="bottom"/>
 
 </FrameLayout>

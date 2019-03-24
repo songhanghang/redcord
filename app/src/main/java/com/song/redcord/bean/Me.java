@@ -67,17 +67,15 @@ public class Me extends Lover {
         you.pull(new RequestCallback() {
             @Override
             public void onCall() {
-                refreshMap();
+                if (isSingle()) {
+                    return;
+                }
+
+                if (onDataUpdateListener != null) {
+                    onDataUpdateListener.onUpdate();
+                }
             }
         });
     }
 
-    private void refreshMap() {
-        if (isSingle()) {
-            return;
-        }
-        if (onDataUpdateListener != null) {
-            onDataUpdateListener.onUpdate();
-        }
-    }
 }
