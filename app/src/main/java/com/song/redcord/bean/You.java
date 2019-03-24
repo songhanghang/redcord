@@ -1,9 +1,9 @@
 package com.song.redcord.bean;
 
 public class You extends Lover {
-    public int
     {
-        name = "YOU";
+        name = "Ta";
+        address = "甘肃省张掖市甘州区";
         setLocation(33.789925, 104.838326);
     }
 
@@ -16,4 +16,5 @@ public class You extends Lover {
     public boolean ablePushLocation() {
         return false;
     }
+
 }

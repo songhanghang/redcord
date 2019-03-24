@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <com.amap.api.maps.MapView
-        android:id="@+id/map"
+    <data>
+
+        <variable
+            name="you"
+            type="com.song.redcord.bean.You" />
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/info"
-        layout="@layout/info_view"
-        android:layout_width="match_parent"
-        android:layout_height="314dp"
-        android:layout_gravity="bottom"/>
+        <com.amap.api.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-</FrameLayout>
+        <include
+            android:id="@+id/info"
+            layout="@layout/info_view"
+            bind:you="@{you}"
+            android:layout_width="match_parent"
+            android:layout_height="314dp"
+            android:layout_gravity="bottom" />
+
+    </FrameLayout>
+</layout>
