@@ -2,7 +2,7 @@ package com.song.redcord.bean;
 
 import android.location.Location;
 
-import com.song.redcord.interfaces.OnDataUpdateListener;
+import com.song.redcord.interfaces.LoverRefresh;
 import com.song.redcord.interfaces.RequestCallback;
 
 /**
@@ -13,15 +13,15 @@ public class Me extends Lover {
 
     public final Lover you = new You();
 
-    private OnDataUpdateListener onDataUpdateListener;
+    private LoverRefresh loverRefresh;
 
     public Me() {
         this.name = "ME";
         this.loveId = "lover";
     }
 
-    public void setOnDataUpdateListener(OnDataUpdateListener onDataUpdateListener) {
-        this.onDataUpdateListener = onDataUpdateListener;
+    public void setLoverRefresh(LoverRefresh loverRefresh) {
+        this.loverRefresh = loverRefresh;
     }
 
     @Override
@@ -71,8 +71,8 @@ public class Me extends Lover {
                     return;
                 }
 
-                if (onDataUpdateListener != null) {
-                    onDataUpdateListener.onUpdate();
+                if (loverRefresh != null) {
+                    loverRefresh.refresh(Me.this);
                 }
             }
         });

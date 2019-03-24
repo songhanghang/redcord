@@ -22,6 +22,7 @@ import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
 import com.song.redcord.bean.Lover;
 import com.song.redcord.bean.Me;
+import com.song.redcord.interfaces.LoverRefresh;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -29,14 +30,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 地图控制器
  */
-public class Maper {
-    private static final String TAG = "Maper";
+public class MapController extends Controller<Me> {
+    private static final String TAG = "MapController";
     private final AMap aMap;
     // 已经缩放地图
     private final AtomicBoolean hasScale = new AtomicBoolean(false);
     private Context context;
 
-    public Maper(Context context, AMap aMap) {
+    public MapController(Context context, AMap aMap, LoverRefresh loverRefresh) {
+        super(loverRefresh);
         this.context = context;
         this.aMap = aMap;
     }
@@ -52,12 +54,15 @@ public class Maper {
         aMap.setMyLocationEnabled(true);
     }
 
+    @Override
     public void refresh(Me me) {
         Log.i(TAG, "me : " + me.location.getLatitude() + "    " + me.location.getLongitude());
         Log.i(TAG, "you : " + me.you.location.getLatitude() + "    " + me.you.location.getLongitude());
-
+        if (loverRefresh != null) {
+            loverRefresh.refresh(me.you);
+        }
         markUs(me, me.you);
-        navigation(me.location, me.you.location);
+        navigation(me, me.you);
         if (!hasScale.getAndSet(true)) {
             scaleMap(me, me.you);
         }
@@ -99,11 +104,11 @@ public class Maper {
     /**
      * 实现导航信息
      */
-    private void navigation(Location me, Location you) {
+    private void navigation(Lover me, Lover you) {
         RouteSearch routeSearch = new RouteSearch(context);
         RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
-                new LatLonPoint(me.getLatitude(), me.getLongitude()),
-                new LatLonPoint(you.getLatitude(), you.getLongitude()));
+                new LatLonPoint(me.location.getLatitude(), me.location.getLongitude()),
+                new LatLonPoint(you.location.getLatitude(), you.location.getLongitude()));
         RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo, RouteSearch.DrivingDefault, null, null, "");
         routeSearch.calculateDriveRouteAsyn(query);
         routeSearch.setRouteSearchListener(new RouteSearch.OnRouteSearchListener() {
@@ -148,5 +153,6 @@ public class Maper {
             }
         });
     }
+
 
 }

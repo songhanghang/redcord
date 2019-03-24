@@ -6,24 +6,25 @@ import android.animation.ObjectAnimator;
 import android.view.View;
 
 import com.song.redcord.R;
-import com.song.redcord.bean.Lover;
+import com.song.redcord.bean.You;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class InfoViewController implements View.OnClickListener {
+public class InfoController extends Controller<You> implements View.OnClickListener {
     private AtomicBoolean isExpand = new AtomicBoolean(false);
     private View expandView;
     private View closeView;
     private AnimatorSet animSet;
 
-    public InfoViewController(View view) {
+    public InfoController(View view) {
         expandView = view.findViewById(R.id.expand_view);
         closeView = view.findViewById(R.id.close_view);
         expandView.setOnClickListener(this);
         closeView.setOnClickListener(this);
     }
 
-    public void refresh(Lover you) {
+    @Override
+    public void refresh(You you) {
 
     }
 

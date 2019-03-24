@@ -9,24 +9,22 @@ import android.os.Bundle;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.song.redcord.bean.Me;
-import com.song.redcord.interfaces.OnDataUpdateListener;
-import com.song.redcord.map.InfoViewController;
-import com.song.redcord.map.Maper;
+import com.song.redcord.map.InfoController;
+import com.song.redcord.map.MapController;
 
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener,
-        EasyPermissions.PermissionCallbacks,
-        OnDataUpdateListener {
+        EasyPermissions.PermissionCallbacks {
 
     private static final int RC_LOCATION_PERM = 1;
     private MapView mapView;
-    private InfoViewController infoViewSetter;
     private AMap aMap;
-    private Maper maper;
     private Me me;
+    private InfoController infoViewController;
+    private MapController mapController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +35,10 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         if (aMap == null) {
             aMap = mapView.getMap();
         }
-        infoViewSetter = new InfoViewController(findViewById(R.id.info));
-        maper = new Maper(this, aMap);
+        infoViewController = new InfoController(findViewById(R.id.info));
+        mapController = new MapController(this, aMap, infoViewController);
         me = new Me();
-        me.setOnDataUpdateListener(this);
+        me.setLoverRefresh(mapController);
         aMap.setOnMyLocationChangeListener(this);
 
         EasyPermissions.requestPermissions(this,
@@ -86,17 +84,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        maper.init();
+        mapController.init();
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
 
-    }
-
-    @Override
-    public void onUpdate() {
-        maper.refresh(me);
-        infoViewSetter.refresh(me.you);
     }
 }
