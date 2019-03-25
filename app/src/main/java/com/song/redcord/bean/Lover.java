@@ -11,9 +11,9 @@ public abstract class Lover extends BaseObservable implements DataServer {
 
     public String id;
     public String loveId;
-    public String name;
-
-    public String address;
+    public final Location location = new Location("");
+    private String name;
+    private String address;
 
     @Bindable
     public String getName() {
@@ -34,8 +34,6 @@ public abstract class Lover extends BaseObservable implements DataServer {
     public void setAddress(String address) {
         this.address = address;
     }
-
-    public final Location location = new Location("");
 
     public abstract boolean ablePullLocation();
 

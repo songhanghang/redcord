@@ -20,8 +20,10 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusRouteResult;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.RidePath;
 import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
 import com.song.redcord.bean.Lover;
 import com.song.redcord.bean.Me;
@@ -114,13 +116,13 @@ public class MapController extends Controller implements AMapLocationListener {
                 .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 .position(melatl)
                 .draggable(false)
-                .title(me.name);
+                .title(me.getName());
         aMap.addMarker(meOption);
         MarkerOptions youOption = new MarkerOptions().icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 .position(youlatl)
                 .draggable(false)
-                .title(you.name);
+                .title(you.getName());
         aMap.addMarker(youOption).showInfoWindow();
     }
 
@@ -144,8 +146,16 @@ public class MapController extends Controller implements AMapLocationListener {
         RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
                 new LatLonPoint(me.location.getLatitude(), me.location.getLongitude()),
                 new LatLonPoint(you.location.getLatitude(), you.location.getLongitude()));
-        RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo, RouteSearch.DrivingDefault, null, null, "");
-        routeSearch.calculateDriveRouteAsyn(query);
+
+        RouteSearch.DriveRouteQuery driveQuery = new RouteSearch.DriveRouteQuery(fromAndTo, RouteSearch.DRIVING_SINGLE_DEFAULT, null, null, "");
+        routeSearch.calculateDriveRouteAsyn(driveQuery);
+
+        RouteSearch.WalkRouteQuery workQuery = new RouteSearch.WalkRouteQuery(fromAndTo);
+        routeSearch.calculateWalkRouteAsyn(workQuery);
+
+        RouteSearch.RideRouteQuery rideQuery = new RouteSearch.RideRouteQuery(fromAndTo);
+        routeSearch.calculateRideRouteAsyn(rideQuery);
+
         routeSearch.setRouteSearchListener(new RouteSearch.OnRouteSearchListener() {
             @Override
             public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
@@ -154,42 +164,58 @@ public class MapController extends Controller implements AMapLocationListener {
 
             @Override
             public void onDriveRouteSearched(DriveRouteResult result, int errorCode) {
-                if (errorCode == AMapException.CODE_AMAP_SUCCESS) {
-                    if (result == null
-                            || result.getPaths() == null
-                            || result.getPaths().size() == 0)
-                        return;
-
+                if (errorCode == AMapException.CODE_AMAP_SUCCESS
+                        && result != null
+                        && result.getPaths() != null
+                        && result.getPaths().size() > 0) {
                     final DrivePath drivePath = result.getPaths().get(0);
                     DrivingRouteOverLay drivingRouteOverlay = new DrivingRouteOverLay(
                             context, aMap, drivePath,
                             result.getStartPos(),
                             result.getTargetPos(), null);
-                    drivingRouteOverlay.setNodeIconVisibility(false);//设置节点marker是否显示
-                    drivingRouteOverlay.setIsColorfulline(true);//是否用颜色展示交通拥堵情况，默认true
+                    drivingRouteOverlay.setNodeIconVisibility(false);
+                    drivingRouteOverlay.setIsColorfulline(true);
                     drivingRouteOverlay.removeFromMap();
                     drivingRouteOverlay.addToMap();
                     int dis = (int) drivePath.getDistance();
                     int dur = (int) drivePath.getDuration();
-                    Me.getInstance().you.driveInfo = "驾车 "
-                            + AMapUtil.getFriendlyTime(dur)
-                            + " | "
-                            + AMapUtil.getFriendlyLength(dis);
-                    Me.getInstance().you.notifyChange();
-
-                    String des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")";
-                    Log.i("songhang", "des " + des);
+                    Me.getInstance().you.setDriveInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
+                } else {
+                    Me.getInstance().you.setDriveInfo("不知哪里出了问题...");
                 }
+                Me.getInstance().you.notifyChange();
             }
 
             @Override
-            public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int i) {
-
+            public void onWalkRouteSearched(WalkRouteResult result, int errorCode) {
+                if (errorCode == AMapException.CODE_AMAP_SUCCESS
+                        && result != null
+                        && result.getPaths() != null
+                        && result.getPaths().size() > 0) {
+                    WalkPath walkPath = result.getPaths().get(0);
+                    int dis = (int) walkPath.getDistance();
+                    int dur = (int) walkPath.getDuration();
+                    Me.getInstance().you.setWorkInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
+                } else {
+                    Me.getInstance().you.setWorkInfo("可能太远了, 要不换个交通工具?");
+                }
+                Me.getInstance().you.notifyChange();
             }
 
             @Override
-            public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {
-
+            public void onRideRouteSearched(RideRouteResult result, int errorCode) {
+                if (errorCode == AMapException.CODE_AMAP_SUCCESS
+                        && result != null
+                        && result.getPaths() != null
+                        && result.getPaths().size() > 0) {
+                    RidePath ridePath = result.getPaths().get(0);
+                    int dis = (int) ridePath.getDistance();
+                    int dur = (int) ridePath.getDuration();
+                    Me.getInstance().you.setRideInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
+                } else {
+                    Me.getInstance().you.setRideInfo("也许不适合骑车,算了吧...");
+                }
+                Me.getInstance().you.notifyChange();
             }
         });
     }

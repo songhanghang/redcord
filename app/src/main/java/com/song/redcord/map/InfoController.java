@@ -23,6 +23,7 @@ public class InfoController extends Controller implements View.OnClickListener {
         expandView.setOnClickListener(this);
         closeView.setOnClickListener(this);
         view.findViewById(R.id.close_see_you).setOnClickListener(this);
+        view.findViewById(R.id.expand_see_you).setOnClickListener(this);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class InfoController extends Controller implements View.OnClickListener {
             } else {
                 expand();
             }
-        } else if (id == R.id.close_see_you) {
+        } else if (id == R.id.close_see_you || id == R.id.expand_see_you) {
             Location location = Me.getInstance().you.location;
             NavgationUtil.nav(v.getContext(), location.getLatitude(), location.getLongitude());
         }

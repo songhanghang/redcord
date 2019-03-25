@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="you"
             type="com.song.redcord.bean.You" />
@@ -13,13 +15,91 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="8dp"
+        tools:visibility="visible">
 
-        <TextView
-            android:id="@+id/expand_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{you.name}" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/expand_name"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="13dp"
+                android:background="@drawable/avatar_bg"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:shadowDx="10"
+                android:shadowDy="10"
+                android:shadowRadius="1"
+                android:singleLine="true"
+                android:text="@{you.name}"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:textStyle="italic|bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Ta" />
+
+            <TextView
+                style="@style/TextTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="3dp"
+                android:text='@{you.address == null ? "loading..." : "地址: " + you.address}'
+                app:layout_constraintStart_toEndOf="@+id/expand_name"
+                app:layout_constraintTop_toTopOf="@+id/expand_name"
+                tools:text="甘肃省" />
+
+            <TextView
+                style="@style/TextSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:layout_marginBottom="3dp"
+                android:text='@{"经纬度: "+ you.location.getLatitude() + " | " + you.location.getLongitude()}'
+                app:layout_constraintBottom_toBottomOf="@+id/expand_name"
+                app:layout_constraintStart_toEndOf="@+id/expand_name"
+                tools:text="经纬度" />
+
+            <TextView
+                style="@style/TextTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingMultiplier="1.5"
+                android:text='@{you.driveInfo == null ? "探路中..." : ("距离: " + you.lineDistance+ "\n驾车: " + you.driveInfo+ "\n骑行: " + you.rideInfo + "\n步行: " + you.workInfo  )}'
+                app:layout_constraintBottom_toTopOf="@+id/expand_see_you"
+                app:layout_constraintStart_toStartOf="@+id/expand_name"
+                app:layout_constraintTop_toBottomOf="@+id/expand_name"
+                tools:text="直线距离" />
+
+
+            <TextView
+                android:id="@+id/expand_see_you"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginEnd="13dp"
+                android:layout_marginBottom="13dp"
+                android:background="@drawable/btn_bg"
+                android:gravity="center"
+                android:paddingStart="20dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="5dp"
+                android:text="@string/app_see_you"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
 
     </android.support.v7.widget.CardView>
 

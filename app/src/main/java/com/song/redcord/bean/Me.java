@@ -20,7 +20,7 @@ public class Me extends Lover {
     private LoverRefresh loverRefresh;
 
     private Me() {
-        this.name = "我";
+        setName("我");
         this.loveId = "lover";
     }
 

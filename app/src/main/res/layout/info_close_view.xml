@@ -16,18 +16,15 @@
         android:layout_height="60dp"
         app:cardCornerRadius="8dp">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingStart="13.3dp"
-            android:paddingEnd="13.3dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/close_name"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
+                android:layout_marginStart="13dp"
                 android:background="@drawable/avatar_bg"
                 android:ellipsize="end"
                 android:gravity="center"
@@ -38,43 +35,45 @@
                 android:text="@{you.name}"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
-                android:textStyle="italic|bold" />
+                android:textStyle="italic|bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1">
+            <TextView
+                android:id="@+id/close_address"
+                style="@style/TextTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:layout_marginEnd="8dp"
+                android:text="@{you.address}"
+                app:layout_constraintEnd_toStartOf="@+id/close_see_you"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/close_name"
+                app:layout_constraintTop_toTopOf="@+id/close_name"
+                tools:text="#####" />
 
-                <TextView
-                    android:id="@+id/close_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{you.address}"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    tools:text="#####" />
-
-                <TextView
-                    android:id="@+id/close_drive_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="10dp"
-                    android:text="@{you.driveInfo}"
-                    android:textColor="@color/colorBlackAlpha"
-                    android:textSize="12sp"
-                    tools:text="#####" />
-            </FrameLayout>
-
-
+            <TextView
+                android:id="@+id/close_drive_info"
+                style="@style/TextSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="13dp"
+                android:layout_marginEnd="8dp"
+                android:text='@{you.driveInfo == null ? "探路中..." : "驾车 " + you.driveInfo}'
+                app:layout_constraintBottom_toBottomOf="@+id/close_name"
+                app:layout_constraintEnd_toStartOf="@+id/close_see_you"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/close_name"
+                tools:text="#####" />
 
             <TextView
                 android:id="@+id/close_see_you"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/btn_bg"
                 android:paddingStart="20dp"
                 android:paddingTop="5dp"
@@ -83,10 +82,12 @@
                 android:text="@string/app_see_you"
                 android:textColor="@color/colorWhite"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
-
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
 
