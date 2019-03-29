@@ -88,6 +88,7 @@
                 android:layout_marginBottom="13dp"
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
+                android:onClick="@{you::onNavClick}"
                 android:paddingStart="20dp"
                 android:paddingTop="5dp"
                 android:paddingEnd="20dp"

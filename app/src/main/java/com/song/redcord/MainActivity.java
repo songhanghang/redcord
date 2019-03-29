@@ -5,10 +5,10 @@ import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
-import com.song.redcord.bean.Me;
 import com.song.redcord.databinding.ActivityMainBinding;
 import com.song.redcord.map.InfoController;
 import com.song.redcord.map.MapController;
@@ -22,26 +22,25 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
     private static final int RC_LOCATION_PERM = 1;
     private MapView mapView;
     private AMap aMap;
-    private InfoController infoViewController;
     private MapController mapController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMainBinding mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mainBinding.setYou(Me.getInstance().you);
         mapView = findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         if (aMap == null) {
             aMap = mapView.getMap();
         }
-        infoViewController = new InfoController(findViewById(R.id.info));
-        mapController = new MapController(this, aMap, infoViewController);
+
+        mapController = new MapController(this, aMap, mainBinding);
+        new InfoController(findViewById(android.R.id.content));
 
         EasyPermissions.requestPermissions(this,
                 getString(R.string.app_need_location),
                 RC_LOCATION_PERM,
-                Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.CHANGE_WIFI_STATE);
+                Manifest.permission.ACCESS_COARSE_LOCATION);
     }
 
     @Override
@@ -81,6 +80,7 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-
+        Toast.makeText(this, R.string.app_need_location, Toast.LENGTH_LONG).show();
+        finish();
     }
 }

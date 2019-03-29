@@ -2,17 +2,21 @@ package com.song.redcord.bean;
 
 
 import android.databinding.Bindable;
+import android.view.View;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.song.redcord.map.AMapUtil;
+import com.song.redcord.map.NavgationUtil;
 
 public class You extends Lover {
+    private String driveInfo;
+    private String workInfo;
+    private String rideInfo;
 
-    {
-        setName("Ta");
-        setAddress("甘肃省张掖市甘州区");
-        setLocation(33.789925, 104.838326);
+    public You(String id) {
+        super(id);
+        setName("你");
     }
 
     public String getDriveInfo() {
@@ -39,27 +43,26 @@ public class You extends Lover {
         this.rideInfo = rideInfo;
     }
 
-    private String driveInfo;
-    private String workInfo;
-    private String rideInfo;
-
     @Bindable
     public String getLineDistance() {
-        LatLng latMe = new LatLng(Me.getInstance().location.getLatitude(), Me.getInstance().location.getLongitude());
+        LatLng latMe = new LatLng(getLover().location.getLatitude(), getLover().location.getLongitude());
         LatLng latYou = new LatLng(location.getLatitude(), location.getLongitude());
         float dis = AMapUtils.calculateLineDistance(latMe, latYou);
         return AMapUtil.getFriendlyLength((int) dis);
     }
 
-
     @Override
-    public boolean ablePullLocation() {
+    public boolean allowPullLocation() {
         return true;
     }
 
     @Override
-    public boolean ablePushLocation() {
+    public boolean allowPushLocation() {
         return false;
+    }
+
+    public void onNavClick(View view) {
+        NavgationUtil.nav(view.getContext(), location.getLatitude(), location.getLongitude());
     }
 
 }

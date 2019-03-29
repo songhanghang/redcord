@@ -1,7 +1,9 @@
 package com.song.redcord.map;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -27,29 +29,37 @@ import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
 import com.song.redcord.bean.Lover;
 import com.song.redcord.bean.Me;
-import com.song.redcord.interfaces.LoverRefresh;
+import com.song.redcord.bean.You;
+import com.song.redcord.databinding.ActivityMainBinding;
+import com.song.redcord.interfaces.RequestCallback;
+import com.song.redcord.util.Pref;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import cn.leancloud.AVObject;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 
 /**
  * 地图控制器
  */
-public class MapController extends Controller implements AMapLocationListener {
+public class MapController implements AMapLocationListener {
     private static final String TAG = "MapController";
     private final AMap aMap;
+    private final AtomicBoolean hasScale = new AtomicBoolean(false);
+    private Me me;
     private AMapLocationClient locationClient;
     private AMapLocationClientOption locationOption;
-
+    private ActivityMainBinding binding;
     // 已经缩放地图
-    private final AtomicBoolean hasScale = new AtomicBoolean(false);
     private Context context;
 
-    public MapController(Context context, AMap aMap, LoverRefresh loverRefresh) {
-        super(loverRefresh);
+    public MapController(Context context, AMap aMap, ActivityMainBinding binding) {
         this.context = context;
         this.aMap = aMap;
-        Me.getInstance().setLoverRefresh(this);
+        this.binding = binding;
+        check();
     }
 
     public void init() {
@@ -90,20 +100,75 @@ public class MapController extends Controller implements AMapLocationListener {
         aMap.setMyLocationEnabled(true);
     }
 
-    @Override
-    public void refresh() {
-        Me me = Me.getInstance();
-        Log.i(TAG, "me : " + me.location.getLatitude() + "    " + me.location.getLongitude());
-        Log.i(TAG, "you : " + me.you.location.getLatitude() + "    " + me.you.location.getLongitude());
-        if (loverRefresh != null) {
-            loverRefresh.refresh();
-        }
-        markUs(me, me.you);
-        navigation(me, me.you);
-        if (!hasScale.getAndSet(true)) {
-            scaleMap(me, me.you);
-        }
+    private void check() {
+        String meId = Pref.getInstance().getId();
+        if (!TextUtils.isEmpty(meId)) {
+            me = new Me(meId);
+            me.pull(new RequestCallback() {
+                @Override
+                public void onCall() {
+                    if (me.isSingle()) {
+                        Log.i("songhang", "请绑定她的id");
+                        showBindView();
+                    } else {
+                        You you = new You(me.loveId);
+                        me.setLover(you);
+                        binding.setYou(you);
+                    }
+                }
+            });
+        } else {
+            Log.i("songhang", "弹窗输入我id还是创建？，优化从对方那里找我id， 找不到然后在创建");
+            AVObject love = new AVObject(Lover.AV_CLASS);
+            love.put(Lover.AV_KEY_LAT, me.location.getLatitude());
+            love.put(Lover.AV_KEY_LON, me.location.getLongitude());
+            love.saveInBackground().subscribe(new Observer<AVObject>() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
+                }
+
+                @Override
+                public void onNext(AVObject avObject) {
+                    me = new Me(avObject.getObjectId());
+                    Pref.getInstance().saveId(me.id);
+                    Log.i("songhang", "请绑定她的id");
+                    showBindView();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+        }
+    }
+
+    private void showBindView() {
+
+    }
+
+    private void bindYouById(String id) {
+        final You you = new You(id);
+        binding.setYou(you);
+        you.pull(new RequestCallback() {
+            @Override
+            public void onCall() {
+                if (you.isSingle()) {
+                    me.setLover(you);
+                    me.push();
+                    you.push();
+                    Toast.makeText(context, "已绑定，等待数据刷新", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, "人家已经有爱人", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     /**
@@ -141,7 +206,7 @@ public class MapController extends Controller implements AMapLocationListener {
     /**
      * 实现导航信息
      */
-    private void navigation(Lover me, Lover you) {
+    private void navigation(final Lover me, final You you) {
         RouteSearch routeSearch = new RouteSearch(context);
         RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
                 new LatLonPoint(me.location.getLatitude(), me.location.getLongitude()),
@@ -179,11 +244,11 @@ public class MapController extends Controller implements AMapLocationListener {
                     drivingRouteOverlay.addToMap();
                     int dis = (int) drivePath.getDistance();
                     int dur = (int) drivePath.getDuration();
-                    Me.getInstance().you.setDriveInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
+                    you.setDriveInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
                 } else {
-                    Me.getInstance().you.setDriveInfo("不知哪里出了问题...");
+                    you.setDriveInfo("不知哪里出了问题...");
                 }
-                Me.getInstance().you.notifyChange();
+                you.notifyChange();
             }
 
             @Override
@@ -195,11 +260,11 @@ public class MapController extends Controller implements AMapLocationListener {
                     WalkPath walkPath = result.getPaths().get(0);
                     int dis = (int) walkPath.getDistance();
                     int dur = (int) walkPath.getDuration();
-                    Me.getInstance().you.setWorkInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
+                    you.setWorkInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
                 } else {
-                    Me.getInstance().you.setWorkInfo("可能太远了, 要不换个交通工具?");
+                    you.setWorkInfo("可能太远了, 要不换个交通工具?");
                 }
-                Me.getInstance().you.notifyChange();
+                you.notifyChange();
             }
 
             @Override
@@ -211,11 +276,11 @@ public class MapController extends Controller implements AMapLocationListener {
                     RidePath ridePath = result.getPaths().get(0);
                     int dis = (int) ridePath.getDistance();
                     int dur = (int) ridePath.getDuration();
-                    Me.getInstance().you.setRideInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
+                    you.setRideInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
                 } else {
-                    Me.getInstance().you.setRideInfo("也许不适合骑车,算了吧...");
+                    you.setRideInfo("也许不适合骑车,算了吧...");
                 }
-                Me.getInstance().you.notifyChange();
+                you.notifyChange();
             }
         });
     }
@@ -229,10 +294,35 @@ public class MapController extends Controller implements AMapLocationListener {
             Log.e(TAG, "定位失败, 错误码 " + aMapLocation.getErrorCode());
             return;
         }
-        Me.getInstance().update(aMapLocation);
 
-        Log.i("songhang", "address " + aMapLocation.getAddress());
-        Log.i("songhang", "lat " + aMapLocation.getLatitude());
-        Log.i("songhang", "long " + aMapLocation.getLongitude());
+        Log.i("songhang", "me address " + aMapLocation.getAddress());
+        Log.i("songhang", "me lat " + aMapLocation.getLatitude());
+        Log.i("songhang", "me long " + aMapLocation.getLongitude());
+
+        if (me == null) {
+            return;
+        }
+
+        me.setLocation(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+        me.setAddress(aMapLocation.getAddress());
+        me.push();
+
+        final Lover lover = me.getLover();
+        if (lover == null) {
+            return;
+        }
+
+        lover.pull(new RequestCallback() {
+            @Override
+            public void onCall() {
+                Log.i(TAG, "you : " + lover.location.getLatitude() + "    " + lover.location.getLongitude());
+                markUs(me, lover);
+                navigation(me, (You) lover);
+                if (!hasScale.getAndSet(true)) {
+                    scaleMap(me, lover);
+                }
+            }
+        });
+
     }
 }
