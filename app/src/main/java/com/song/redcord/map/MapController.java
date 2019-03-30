@@ -193,7 +193,12 @@ public class MapController implements AMapLocationListener {
                 .setView(view)
                 .setCancelable(false)
                 .setPositiveButton("发送我的ID", null)
-                .setNegativeButton("取消", null)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity.finish();
+                    }
+                })
                 .create();
         dialog.show();
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
