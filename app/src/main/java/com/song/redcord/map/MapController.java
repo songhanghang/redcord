@@ -142,8 +142,8 @@ public class MapController implements AMapLocationListener {
         final View view = LayoutInflater.from(activity).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
         final AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle("注册或登录")
-                .setMessage("新用户请直接注册,\n老用户可以从Ta那里获取你的ID直接登录！")
+                .setTitle("注册与登录")
+                .setMessage("新用户请注册,\n老用户可以从Ta那里获取你的ID登录！")
                 .setView(view)
                 .setCancelable(false)
                 .setPositiveButton("注册", null)
@@ -189,7 +189,7 @@ public class MapController implements AMapLocationListener {
         final EditText editText = view.findViewById(R.id.edit);
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("配对")
-                .setMessage("请输入Ta的ID, 或者发送自己ID给Ta!")
+                .setMessage("请输入Ta的ID进行配对,\n或者发送自己ID给Ta进行配对, \n配对成功后, 对方需重启程序！" )
                 .setView(view)
                 .setCancelable(false)
                 .setPositiveButton("发送我的ID", null)
@@ -220,13 +220,13 @@ public class MapController implements AMapLocationListener {
                                 refreshView(me, her);
                                 dialog.dismiss();
                             } else {
-                                Toast.makeText(activity, "名花有主", Toast.LENGTH_LONG).show();
+                                Toast.makeText(activity, "抱歉！名花有主", Toast.LENGTH_LONG).show();
                             }
                         }
 
                         @Override
                         public void onFail() {
-                            Toast.makeText(activity, "绑定失败", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "配对失败", Toast.LENGTH_LONG).show();
                         }
                     });
                 } else {
@@ -270,8 +270,9 @@ public class MapController implements AMapLocationListener {
                     Pref.get().saveId(me.id);
                     dialog.dismiss();
                     showBindHerView();
+                    Toast.makeText(activity, "注册成功", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(activity, "创建失败", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, "注册失败", Toast.LENGTH_LONG).show();
                 }
             }
         });

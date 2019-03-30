@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">redcord</string>
+    <string name="app_name">红绳</string>
     <string name="app_need_location">没有权限，无法为连接您的TA</string>
     <string name="app_see_you">见Ta</string>
     <string name="app_go_back">防丢失</string>
