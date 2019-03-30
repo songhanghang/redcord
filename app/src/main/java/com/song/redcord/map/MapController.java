@@ -109,7 +109,7 @@ public class MapController implements AMapLocationListener {
     }
 
     private void check() {
-        String meId = Pref.getInstance().getId();
+        String meId = Pref.get().getId();
         if (!TextUtils.isEmpty(meId)) {
             me = new Me(meId);
             binding.setMe(me);
@@ -269,7 +269,7 @@ public class MapController implements AMapLocationListener {
                 if (e == null) {
                     me = new Me(love.getObjectId());
                     binding.setMe(me);
-                    Pref.getInstance().saveId(me.id);
+                    Pref.get().saveId(me.id);
                     dialog.dismiss();
                     showBindHerView();
                 } else {
@@ -284,7 +284,7 @@ public class MapController implements AMapLocationListener {
         me.pull(new RequestCallback() {
             @Override
             public void onSuccess() {
-                Pref.getInstance().saveId(me.id);
+                Pref.get().saveId(me.id);
                 Her her = new Her(me.loverId);
                 me.setLover(her);
                 binding.setMe(me);

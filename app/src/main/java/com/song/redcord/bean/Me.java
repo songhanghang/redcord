@@ -1,8 +1,5 @@
 package com.song.redcord.bean;
-/**
- * 我的位置只上传不下载
- * 你的位置只下载不上传
- */
+
 public class Me extends Lover {
 
     public Me(String id) {

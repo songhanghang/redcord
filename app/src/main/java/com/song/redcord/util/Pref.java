@@ -17,7 +17,7 @@ public class Pref {
         private static Pref instance = new Pref();
     }
 
-    public static Pref getInstance() {
+    public static Pref get() {
         return Holder.instance;
     }
 

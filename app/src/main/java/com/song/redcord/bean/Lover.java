@@ -13,14 +13,16 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.song.redcord.interfaces.RequestCallback;
 
-
+/**
+ * 我的位置只上传不下载
+ * Ta的位置只下载不上传
+ */
 public abstract class Lover extends BaseObservable implements DataServer {
     public static final String AV_CLASS = "LOVE";
     public static final String AV_KEY_ADDRESS = "address";
     public static final String AV_KEY_LOVE_ID = "love_id";
     public static final String AV_KEY_LAT = "lat";
     public static final String AV_KEY_LON = "lon";
-    // 我中有你，你中有我
     private Lover lover;
     public final String id;
     public final Location location = new Location("");
@@ -85,9 +87,11 @@ public abstract class Lover extends BaseObservable implements DataServer {
                         location.setLongitude(object.getDouble(AV_KEY_LON));
                     }
                     notifyChange();
-                    callback.onSuccess();
+                    if (callback != null)
+                        callback.onSuccess();
                 } else {
-                    callback.onFail();
+                    if (callback != null)
+                        callback.onFail();
                 }
             }
         });
@@ -114,7 +118,6 @@ public abstract class Lover extends BaseObservable implements DataServer {
             }
         });
     }
-
 
 
     public boolean isSingle() {

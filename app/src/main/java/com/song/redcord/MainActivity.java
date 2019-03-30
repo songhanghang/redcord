@@ -2,6 +2,9 @@ package com.song.redcord;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.WallpaperManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -33,6 +36,16 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         mapView.onCreate(savedInstanceState);
         if (aMap == null) {
             aMap = mapView.getMap();
+        }
+
+        try {
+            Intent intent = new Intent();
+            intent.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+            intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                    new ComponentName(App.get().getPackageName(), LiveWallpaper.class.getCanonicalName()));
+            App.get().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         mapController = new MapController(this, aMap, mainBinding);
