@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi-v7a"
+            abiFilters  "armeabi-v7a"
         }
     }
     buildTypes {
@@ -39,5 +39,5 @@ dependencies {
     implementation 'pub.devrel:easypermissions:2.0.1'
     implementation 'com.android.support:cardview-v7:28+'
 
-    compile('cn.leancloud.android:avoscloud-sdk:4.7.9')
+    compile ('cn.leancloud.android:avoscloud-sdk:4.7.9')
 }
