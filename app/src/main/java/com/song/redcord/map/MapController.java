@@ -60,11 +60,10 @@ public class MapController implements AMapLocationListener {
     private AMapLocation aMapLocation;
     private AMapLocationClientOption locationOption;
     private ActivityMainBinding binding;
-    // 已经缩放地图
-    private Activity context;
+    private Activity activity;
 
-    public MapController(Activity context, AMap aMap, ActivityMainBinding binding) {
-        this.context = context;
+    public MapController(Activity activity, AMap aMap, ActivityMainBinding binding) {
+        this.activity = activity;
         this.aMap = aMap;
         this.binding = binding;
     }
@@ -73,28 +72,21 @@ public class MapController implements AMapLocationListener {
         aMap.setLocationSource(new LocationSource() {
             @Override
             public void activate(OnLocationChangedListener onLocationChangedListener) {
-                Log.i("songhang", "+++++++++++ activate ");
-
+                Log.i(TAG, "+++++++++++ activate ");
                 if (locationClient == null) {
-                    locationClient = new AMapLocationClient(context);
+                    locationClient = new AMapLocationClient(activity);
                     locationOption = new AMapLocationClientOption();
-                    //设置定位监听
+                    locationOption.setInterval(10000);
                     locationClient.setLocationListener(MapController.this);
-                    //设置为高精度定位模式
-                    locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-                    //设置定位参数
+                    locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
                     locationClient.setLocationOption(locationOption);
-                    // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-                    // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
-                    // 在定位结束后，在合适的生命周期调用onDestroy()方法
-                    // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
                     locationClient.startLocation();
                 }
             }
 
             @Override
             public void deactivate() {
-                Log.i("songhang", "-------- deactivate -------");
+                Log.i(TAG, "-------- deactivate -------");
                 if (locationClient != null) {
                     locationClient.stopLocation();
                     locationClient.onDestroy();
@@ -147,9 +139,9 @@ public class MapController implements AMapLocationListener {
     }
 
     private void showFirstStartView() {
-        final View view = LayoutInflater.from(context).inflate(R.layout.edit_dialog, null);
+        final View view = LayoutInflater.from(activity).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
-        final AlertDialog dialog = new AlertDialog.Builder(context)
+        final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("注册或登录")
                 .setMessage("新用户请直接注册,\n老用户可以从Ta那里获取你的ID直接登录！")
                 .setView(view)
@@ -158,7 +150,7 @@ public class MapController implements AMapLocationListener {
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        context.finish();
+                        activity.finish();
                     }
                 })
                 .create();
@@ -193,11 +185,11 @@ public class MapController implements AMapLocationListener {
     }
 
     private void showBindHerView() {
-        final View view = LayoutInflater.from(context).inflate(R.layout.edit_dialog, null);
+        final View view = LayoutInflater.from(activity).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
-        final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("连接Ta")
-                .setMessage("请输入要连接的ID,或者发送自己ID给Ta!")
+        final AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setTitle("配对")
+                .setMessage("请输入Ta的ID, 或者发送自己ID给Ta!")
                 .setView(view)
                 .setCancelable(false)
                 .setPositiveButton("发送我的ID", null)
@@ -218,21 +210,22 @@ public class MapController implements AMapLocationListener {
                                 me.setLover(her);
                                 me.push();
                                 her.push();
-                                Toast.makeText(context, "已绑定，等待数据刷新", Toast.LENGTH_LONG).show();
+                                her.onSetWallpaperClick(null);
+                                Toast.makeText(activity, "配对成功，设置动态壁纸吧", Toast.LENGTH_LONG).show();
                                 refreshView(me, her);
                                 dialog.dismiss();
                             } else {
-                                Toast.makeText(context, "人家已经有爱人", Toast.LENGTH_LONG).show();
+                                Toast.makeText(activity, "名花有主", Toast.LENGTH_LONG).show();
                             }
                         }
 
                         @Override
                         public void onFail() {
-                            Toast.makeText(context, "绑定失败", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "绑定失败", Toast.LENGTH_LONG).show();
                         }
                     });
                 } else {
-                    JumpUtil.shareWechatFriend(context, me.id);
+                    JumpUtil.shareWechatFriend(activity, me.id);
                 }
             }
         });
@@ -249,7 +242,7 @@ public class MapController implements AMapLocationListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String str = TextUtils.isEmpty(s.toString()) ? "发送我的ID" : "连接并设置";
+                String str = TextUtils.isEmpty(s.toString()) ? "发送我的ID" : "配对并设置";
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(str);
             }
         });
@@ -273,7 +266,7 @@ public class MapController implements AMapLocationListener {
                     dialog.dismiss();
                     showBindHerView();
                 } else {
-                    Toast.makeText(context, "创建失败", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, "创建失败", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -293,7 +286,7 @@ public class MapController implements AMapLocationListener {
 
             @Override
             public void onFail() {
-                Toast.makeText(context, "获取失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "获取失败", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -342,7 +335,7 @@ public class MapController implements AMapLocationListener {
      * 实现导航信息
      */
     private void navigation(final Lover me, final Her her) {
-        RouteSearch routeSearch = new RouteSearch(context);
+        RouteSearch routeSearch = new RouteSearch(activity);
         RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
                 new LatLonPoint(me.location.getLatitude(), me.location.getLongitude()),
                 new LatLonPoint(her.location.getLatitude(), her.location.getLongitude()));
@@ -370,7 +363,7 @@ public class MapController implements AMapLocationListener {
                         && result.getPaths().size() > 0) {
                     final DrivePath drivePath = result.getPaths().get(0);
                     DrivingRouteOverLay drivingRouteOverlay = new DrivingRouteOverLay(
-                            context, aMap, drivePath,
+                            activity, aMap, drivePath,
                             result.getStartPos(),
                             result.getTargetPos(), null);
                     drivingRouteOverlay.setNodeIconVisibility(false);

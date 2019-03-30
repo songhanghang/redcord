@@ -175,9 +175,6 @@ public class LiveWallpaper extends WallpaperService {
 
                 //绘制连线
                 paint.setStrokeWidth(10);
-//                canvas.drawLine(startX, startY, leftX, leftY, paint);
-//                canvas.drawLine(leftX, leftY, rightX, rightY, paint);
-//                canvas.drawLine(rightX, rightY, endX, endY, paint);
 
                 //画二阶贝塞尔曲线
                 paint.setColor(getColor(R.color.colorAccent));
@@ -186,8 +183,6 @@ public class LiveWallpaper extends WallpaperService {
                 path.moveTo(startX, startY);
                 path.cubicTo(leftX, leftY, rightX, rightY, endX, endY);
                 canvas.drawPath(path, paint);
-
-
 
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
