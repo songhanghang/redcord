@@ -150,11 +150,11 @@ public class MapController implements AMapLocationListener {
         final View view = LayoutInflater.from(context).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
         final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("提示")
-                .setMessage("新用户请直接创建，如果已经建立过连接, 从TA那里获取你的ID输入")
+                .setTitle("注册或登录")
+                .setMessage("新用户请直接注册,\n老用户可以从Ta那里获取你的ID直接登录！")
                 .setView(view)
                 .setCancelable(false)
-                .setPositiveButton("创建", null)
+                .setPositiveButton("注册", null)
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -186,7 +186,7 @@ public class MapController implements AMapLocationListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String str = TextUtils.isEmpty(s.toString()) ? "创建" : "获取";
+                String str = TextUtils.isEmpty(s.toString()) ? "注册" : "登录";
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(str);
             }
         });
@@ -196,11 +196,11 @@ public class MapController implements AMapLocationListener {
         final View view = LayoutInflater.from(context).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
         final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("提示")
-                .setMessage("你的id是 " + me.id + "\n输入TA的ID,或者复制自己分享给她")
+                .setTitle("连接Ta")
+                .setMessage("请输入要连接的ID,或者发送自己ID给Ta!")
                 .setView(view)
                 .setCancelable(false)
-                .setPositiveButton("分享", null)
+                .setPositiveButton("发送我的ID", null)
                 .setNegativeButton("取消", null)
                 .create();
         dialog.show();
@@ -249,7 +249,7 @@ public class MapController implements AMapLocationListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String str = TextUtils.isEmpty(s.toString()) ? "分享" : "绑定";
+                String str = TextUtils.isEmpty(s.toString()) ? "发送我的ID" : "连接并设置";
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(str);
             }
         });

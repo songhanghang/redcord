@@ -1,12 +1,17 @@
 package com.song.redcord.bean;
 
 
+import android.app.WallpaperManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.databinding.Bindable;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
+import com.song.redcord.App;
+import com.song.redcord.LiveWallpaper;
 import com.song.redcord.map.AMapUtil;
 import com.song.redcord.map.JumpUtil;
 
@@ -70,7 +75,7 @@ public class Her extends Lover {
         JumpUtil.nav(view.getContext(), location.getLatitude(), location.getLongitude());
     }
 
-    public void onForback(View view) {
+    public void onForbackClick(View view) {
         String str = "若有一天\n你与我失联\n通过这条信息找回我\n这是你的ID:\n\n"
                 + id
                 + "\n\n通过ID可以重新登录"
@@ -78,6 +83,18 @@ public class Her extends Lover {
                 + loverId
                 + "\n\n帮我记下，我怕忘了...\n\n「 来自: RedCrod App 」";
         JumpUtil.shareWechatFriend(view.getContext(), str);
+    }
+
+    public void onSetWallpaperClick(View view) {
+        try {
+            Intent intent = new Intent();
+            intent.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+            intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                    new ComponentName(App.get().getPackageName(), LiveWallpaper.class.getCanonicalName()));
+            App.get().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

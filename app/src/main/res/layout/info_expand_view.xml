@@ -48,8 +48,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginEnd="8dp"
                 android:text='@{her.address == null ? "定位中..." : her.address}'
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/expand_name"
@@ -61,11 +61,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
+                android:layout_marginBottom="2dp"
                 android:text='@{"经纬度: "+ her.location.getLatitude() + " | " + her.location.getLongitude()}'
                 app:layout_constraintBottom_toBottomOf="@+id/expand_name"
-                app:layout_constraintStart_toEndOf="@+id/expand_name"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="2dp"
+                app:layout_constraintStart_toEndOf="@+id/expand_name"
                 tools:text="经纬度" />
 
             <TextView
@@ -92,24 +92,24 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/expand_go_back"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/expand_go_back"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:background="@color/colorPrimary"
-                android:onClick="@{her::onForback}"
                 android:gravity="center"
+                android:onClick="@{her::onForbackClick}"
                 android:text="@string/app_go_back"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/expand_see_you"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/expand_settings_wallpaper"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/expand_see_you" />
 
             <TextView
                 android:id="@+id/expand_settings_wallpaper"
@@ -117,13 +117,14 @@
                 android:layout_height="48dp"
                 android:background="@color/colorAccent"
                 android:gravity="center"
+                android:onClick="@{her::onSetWallpaperClick}"
                 android:text="@string/app_settings_wallpaper"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/expand_go_back"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/expand_go_back" />
 
         </android.support.constraint.ConstraintLayout>
 
