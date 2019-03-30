@@ -24,8 +24,8 @@
 
             <TextView
                 android:id="@+id/expand_name"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginStart="13dp"
                 android:layout_marginTop="13dp"
                 android:background="@drawable/avatar_bg"
@@ -45,24 +45,25 @@
 
             <TextView
                 style="@style/TextTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
-                android:layout_marginTop="3dp"
-                android:text='@{her.address == null ? "loading..." : "地址: " + her.address}'
+                android:layout_marginEnd="8dp"
+                android:text='@{her.address == null ? "定位中..." : her.address}'
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/expand_name"
                 app:layout_constraintTop_toTopOf="@+id/expand_name"
                 tools:text="甘肃省" />
 
             <TextView
                 style="@style/TextSubtitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
-                android:layout_marginBottom="3dp"
                 android:text='@{"经纬度: "+ her.location.getLatitude() + " | " + her.location.getLongitude()}'
                 app:layout_constraintBottom_toBottomOf="@+id/expand_name"
                 app:layout_constraintStart_toEndOf="@+id/expand_name"
+                app:layout_constraintEnd_toEndOf="parent"
                 tools:text="经纬度" />
 
             <TextView

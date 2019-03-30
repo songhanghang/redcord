@@ -3,12 +3,13 @@ package com.song.redcord.map;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.song.redcord.R;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class InfoController implements View.OnClickListener {
+public class InfoController implements View.OnClickListener, View.OnTouchListener{
     private AtomicBoolean isExpand = new AtomicBoolean(false);
     private View expandView;
     private View closeView;
@@ -19,7 +20,6 @@ public class InfoController implements View.OnClickListener {
         closeView = view.findViewById(R.id.close_view);
         expandView.setOnClickListener(this);
         closeView.setOnClickListener(this);
-        view.findViewById(R.id.map).setOnClickListener(this);
     }
 
     @Override
@@ -31,12 +31,18 @@ public class InfoController implements View.OnClickListener {
             } else {
                 expand();
             }
-        } else if (id == R.id.map) {
+        }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.map) {
             if (isExpand.get()) {
                 isExpand.set(false);
                 close();
             }
         }
+        return false;
     }
 
     private void close() {
@@ -88,5 +94,4 @@ public class InfoController implements View.OnClickListener {
         });
 
     }
-
 }
