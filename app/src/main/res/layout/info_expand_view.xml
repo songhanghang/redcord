@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="you"
-            type="com.song.redcord.bean.You" />
+            name="her"
+            type="com.song.redcord.bean.Her" />
     </data>
 
     <android.support.v7.widget.CardView
@@ -35,7 +35,7 @@
                 android:shadowDy="10"
                 android:shadowRadius="1"
                 android:singleLine="true"
-                android:text="@{you.name}"
+                android:text="@{her.name}"
                 android:textColor="@color/colorWhite"
                 android:textSize="18sp"
                 android:textStyle="italic|bold"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
                 android:layout_marginTop="3dp"
-                android:text='@{you.address == null ? "loading..." : "地址: " + you.address}'
+                android:text='@{her.address == null ? "loading..." : "地址: " + her.address}'
                 app:layout_constraintStart_toEndOf="@+id/expand_name"
                 app:layout_constraintTop_toTopOf="@+id/expand_name"
                 tools:text="甘肃省" />
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
                 android:layout_marginBottom="3dp"
-                android:text='@{"经纬度: "+ you.location.getLatitude() + " | " + you.location.getLongitude()}'
+                android:text='@{"经纬度: "+ her.location.getLatitude() + " | " + her.location.getLongitude()}'
                 app:layout_constraintBottom_toBottomOf="@+id/expand_name"
                 app:layout_constraintStart_toEndOf="@+id/expand_name"
                 tools:text="经纬度" />
@@ -72,7 +72,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="8dp"
                 android:lineSpacingMultiplier="1.5"
-                android:text='@{you.driveInfo == null ? "探路中..." : ("距离: " + you.lineDistance+ "\n驾车: " + you.driveInfo+ "\n骑行: " + you.rideInfo + "\n步行: " + you.workInfo  )}'
+                android:text='@{her.driveInfo == null ? "探路中..." : ("距离: " + her.lineDistance+ "\n驾车: " + her.driveInfo+ "\n骑行: " + her.rideInfo + "\n步行: " + her.workInfo  )}'
                 app:layout_constraintBottom_toTopOf="@+id/expand_see_you"
                 app:layout_constraintStart_toStartOf="@+id/expand_name"
                 app:layout_constraintTop_toBottomOf="@+id/expand_name"
@@ -88,7 +88,7 @@
                 android:layout_marginBottom="13dp"
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
-                android:onClick="@{you::onNavClick}"
+                android:onClick="@{her::onNavClick}"
                 android:paddingStart="20dp"
                 android:paddingTop="5dp"
                 android:paddingEnd="20dp"

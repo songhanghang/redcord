@@ -4,16 +4,17 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
-            name="you"
-            type="com.song.redcord.bean.You" />
+            name="her"
+            type="com.song.redcord.bean.Her" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent">
+        android:background="@android:color/transparent"
+        android:visibility='@{her == null ? View.GONE : View.VISIBLE }'>
 
         <include
             layout="@layout/info_expand_view"
@@ -22,7 +23,7 @@
             android:layout_marginStart="13.3dp"
             android:layout_marginEnd="13.3dp"
             android:layout_marginBottom="30dp"
-            bind:you="@{you}" />
+            bind:her="@{her}" />
 
         <include
             layout="@layout/info_close_view"
@@ -32,7 +33,7 @@
             android:layout_marginStart="13.3dp"
             android:layout_marginEnd="13.3dp"
             android:layout_marginBottom="30dp"
-            bind:you="@{you}" />
+            bind:her="@{her}" />
 
     </FrameLayout>
 </layout>

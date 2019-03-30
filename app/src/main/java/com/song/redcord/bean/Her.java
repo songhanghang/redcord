@@ -2,21 +2,22 @@ package com.song.redcord.bean;
 
 
 import android.databinding.Bindable;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.song.redcord.map.AMapUtil;
-import com.song.redcord.map.NavgationUtil;
+import com.song.redcord.map.JumpUtil;
 
-public class You extends Lover {
+public class Her extends Lover {
     private String driveInfo;
     private String workInfo;
     private String rideInfo;
 
-    public You(String id) {
+    public Her(String id) {
         super(id);
-        setName("你");
+        setName("TA");
     }
 
     public String getDriveInfo() {
@@ -61,8 +62,12 @@ public class You extends Lover {
         return false;
     }
 
+    public boolean isNull() {
+        return TextUtils.isEmpty(id);
+    }
+
     public void onNavClick(View view) {
-        NavgationUtil.nav(view.getContext(), location.getLatitude(), location.getLongitude());
+        JumpUtil.nav(view.getContext(), location.getLatitude(), location.getLongitude());
     }
 
 }

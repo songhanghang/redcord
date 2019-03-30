@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="you"
-            type="com.song.redcord.bean.You" />
+            name="her"
+            type="com.song.redcord.bean.Her" />
     </data>
 
     <android.support.v7.widget.CardView
@@ -32,7 +32,7 @@
                 android:shadowDy="10"
                 android:shadowRadius="1"
                 android:singleLine="true"
-                android:text="@{you.name}"
+                android:text="@{her.name}"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
                 android:textStyle="italic|bold"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
                 android:layout_marginEnd="8dp"
-                android:text="@{you.address}"
+                android:text="@{her.address}"
                 app:layout_constraintEnd_toStartOf="@+id/close_see_you"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/close_name"
@@ -62,7 +62,7 @@
                 android:layout_gravity="bottom"
                 android:layout_marginStart="13dp"
                 android:layout_marginEnd="8dp"
-                android:text='@{you.driveInfo == null ? "探路中..." : "驾车 " + you.driveInfo}'
+                android:text='@{her.driveInfo == null ? "探路中..." : "驾车 " + her.driveInfo}'
                 app:layout_constraintBottom_toBottomOf="@+id/close_name"
                 app:layout_constraintEnd_toStartOf="@+id/close_see_you"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -83,7 +83,7 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:onClick="@{you::onNavClick}"
+                android:onClick="@{her::onNavClick}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

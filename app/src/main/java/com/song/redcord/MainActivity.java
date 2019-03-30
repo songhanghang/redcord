@@ -15,6 +15,7 @@ import com.song.redcord.map.MapController;
 
 import java.util.List;
 
+
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends Activity implements EasyPermissions.PermissionCallbacks {

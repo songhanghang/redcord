@@ -5,8 +5,12 @@
     <data>
 
         <variable
-            name="you"
-            type="com.song.redcord.bean.You" />
+            name="her"
+            type="com.song.redcord.bean.Her" />
+
+        <variable
+            name="me"
+            type="com.song.redcord.bean.Me" />
     </data>
 
     <FrameLayout
@@ -18,13 +22,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{"ME : " + me.id + "\nHer : " + her.id}'
+            android:visibility="visible" />
+
         <include
             android:id="@+id/info"
             layout="@layout/info_view"
-            bind:you="@{you}"
             android:layout_width="match_parent"
             android:layout_height="314dp"
-            android:layout_gravity="bottom" />
+            android:layout_gravity="bottom"
+            bind:her="@{her}" />
 
     </FrameLayout>
 </layout>

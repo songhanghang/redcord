@@ -1,5 +1,6 @@
 package com.song.redcord.interfaces;
 
 public interface RequestCallback {
-    void onCall();
+    void onSuccess();
+    void onFail();
 }

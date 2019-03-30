@@ -5,12 +5,14 @@ import android.databinding.Bindable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.song.redcord.interfaces.RequestCallback;
 
-import cn.leancloud.AVObject;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 public abstract class Lover extends BaseObservable implements DataServer {
     public static final String AV_CLASS = "LOVE";
@@ -22,7 +24,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
     private Lover lover;
     public final String id;
     public final Location location = new Location("");
-    public String loveId;
+    public String loverId;
     private String name;
     private String address;
 
@@ -53,7 +55,10 @@ public abstract class Lover extends BaseObservable implements DataServer {
     public void setLover(@NonNull Lover lover) {
         // 我中有你，你中有我
         this.lover = lover;
+        this.loverId = lover.id;
         lover.lover = this;
+        lover.loverId = this.id;
+
     }
 
     public Lover getLover() {
@@ -67,32 +72,23 @@ public abstract class Lover extends BaseObservable implements DataServer {
     @Override
     public void pull(final RequestCallback callback) {
         AVObject love = AVObject.createWithoutData(AV_CLASS, id);
-        love.fetchInBackground().subscribe(new Observer<AVObject>() {
+        love.fetchInBackground(new GetCallback<AVObject>() {
             @Override
-            public void onSubscribe(Disposable d) {
+            public void done(AVObject object, AVException e) {
+                if (e == null) {
+                    address = object.getString(AV_KEY_ADDRESS);
+                    Log.i("songhang", Lover.this.getClass() + " +++++ pull loveid " + loverId);
 
-            }
-
-            @Override
-            public void onNext(AVObject avObject) {
-                address = avObject.getString(AV_KEY_ADDRESS);
-                loveId = avObject.getString(AV_KEY_LOVE_ID);
-                if (allowPullLocation()) {
-                    location.setLatitude(avObject.getLong(AV_KEY_LAT));
-                    location.setLongitude(avObject.getLong(AV_KEY_LON));
+                    loverId = object.getString(AV_KEY_LOVE_ID);
+                    if (allowPullLocation()) {
+                        location.setLatitude(object.getDouble(AV_KEY_LAT));
+                        location.setLongitude(object.getDouble(AV_KEY_LON));
+                    }
+                    notifyChange();
+                    callback.onSuccess();
+                } else {
+                    callback.onFail();
                 }
-                notifyChange();
-                callback.onCall();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
             }
         });
     }
@@ -100,17 +96,29 @@ public abstract class Lover extends BaseObservable implements DataServer {
     @Override
     public void push() {
         AVObject love = AVObject.createWithoutData(AV_CLASS, id);
-        love.put(AV_KEY_ADDRESS, address);
+        if (!TextUtils.isEmpty(address)) {
+            love.put(AV_KEY_ADDRESS, address);
+        }
+        if (!TextUtils.isEmpty(loverId)) {
+            love.put(AV_KEY_LOVE_ID, loverId);
+        }
         if (allowPushLocation()) {
             love.put(AV_KEY_LAT, location.getLatitude());
             love.put(AV_KEY_LON, location.getLongitude());
         }
-        love.put(AV_KEY_LOVE_ID, loveId);
-        love.saveInBackground();
+        Log.i("songhang", " ------- push loveid " + loverId);
+        love.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                Log.i("songhang", "AVEX " + e);
+            }
+        });
     }
 
+
+
     public boolean isSingle() {
-        return TextUtils.isEmpty(loveId);
+        return TextUtils.isEmpty(loverId);
     }
 
     public void setLocation(double lat, double lon) {
