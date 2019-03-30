@@ -25,14 +25,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{"ME : " + me.id + "\nHer : " + her.id}'
+            android:padding="8dp"
+            android:text='@{"我: " + me.id + "\nTa: " + her.id}'
+            android:textSize="12sp"
             android:visibility="visible" />
 
         <include
             android:id="@+id/info"
             layout="@layout/info_view"
             android:layout_width="match_parent"
-            android:layout_height="314dp"
+            android:layout_height="268dp"
             android:layout_gravity="bottom"
             bind:her="@{her}" />
 

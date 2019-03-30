@@ -70,4 +70,14 @@ public class Her extends Lover {
         JumpUtil.nav(view.getContext(), location.getLatitude(), location.getLongitude());
     }
 
+    public void onForback(View view) {
+        String str = "若有一天\n你与我失联\n通过这条信息找回我\n这是你的ID:\n\n"
+                + id
+                + "\n\n通过ID可以重新登录"
+                + "\n这是我的ID:\n\n"
+                + loverId
+                + "\n\n帮我记下，我怕忘了...\n\n「 来自: RedCrod App 」";
+        JumpUtil.shareWechatFriend(view.getContext(), str);
+    }
+
 }
