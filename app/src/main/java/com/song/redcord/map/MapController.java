@@ -119,9 +119,20 @@ public class MapController implements AMapLocationListener {
                     if (me.isSingle()) {
                         showBindHerView();
                     } else {
-                        Her her = new Her(me.loverId);
+                        final Her her = new Her(me.loverId);
                         me.setLover(her);
                         binding.setHer(her);
+                        her.pull(new RequestCallback() {
+                            @Override
+                            public void onSuccess() {
+                                refreshView(me, her);
+                            }
+
+                            @Override
+                            public void onFail() {
+
+                            }
+                        });
                     }
                 }
 
@@ -184,7 +195,6 @@ public class MapController implements AMapLocationListener {
     private void showBindHerView() {
         final View view = LayoutInflater.from(context).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
-        editText.setText("5c9f1fc4a3180b0068c2aa73");
         final AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("提示")
                 .setMessage("你的id是 " + me.id + "\n输入TA的ID,或者复制自己分享给她")
