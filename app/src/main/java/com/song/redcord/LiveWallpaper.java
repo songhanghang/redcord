@@ -52,6 +52,7 @@ public class LiveWallpaper extends WallpaperService {
         private AMapLocationClient mlocationClient;
         private AMapLocationClientOption mLocationOption = null;
         private AMapLocation aMapLocation;
+        private long lastLocationTime;
 
         private final Handler handler = new Handler();
         private final Runnable updateDisplay = new Runnable() {
@@ -240,6 +241,12 @@ public class LiveWallpaper extends WallpaperService {
         @Override
         public void onLocationChanged(AMapLocation location) {
             Log.i(TAG.V, " ~~~~~~~~~~ 壁纸触发定位 ~~~~~~~~~~~");
+            if (this.aMapLocation != null && System.currentTimeMillis() - lastLocationTime < INTERVAL) {
+                return;
+            }
+
+            lastLocationTime = System.currentTimeMillis();
+
             // 位置改变
             if (location != null && location.getErrorCode() == 0) {
                 this.aMapLocation = location;
