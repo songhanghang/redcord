@@ -28,7 +28,7 @@ Android现在并没有很好的解决方案，强大如微信也必须手动开�
 
 那么做个好看的动态壁纸，通过壁纸定位和同步信息就可以解决这个问题.
 于是壁纸来了
-
+![Renderings](https://github.com/songhanghang/redcord/blob/master/app/release/wallpaper.gif)
  
 
 
