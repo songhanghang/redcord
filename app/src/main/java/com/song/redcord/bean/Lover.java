@@ -23,10 +23,10 @@ public abstract class Lover extends BaseObservable implements DataServer {
     public static final String AV_KEY_LOVE_ID = "love_id";
     public static final String AV_KEY_LAT = "lat";
     public static final String AV_KEY_LON = "lon";
-    private Lover lover;
     public final String id;
     public final Location location = new Location("");
-    public String loverId;
+    private Lover lover;
+    private String loverId;
     private String name;
     private String address;
 
@@ -60,7 +60,10 @@ public abstract class Lover extends BaseObservable implements DataServer {
         this.loverId = lover.id;
         lover.lover = this;
         lover.loverId = this.id;
+    }
 
+    public String getLoverId() {
+        return loverId;
     }
 
     public Lover getLover() {
@@ -123,11 +126,5 @@ public abstract class Lover extends BaseObservable implements DataServer {
     public boolean isSingle() {
         return TextUtils.isEmpty(loverId);
     }
-
-    public void setLocation(double lat, double lon) {
-        location.setLatitude(lat);
-        location.setLongitude(lon);
-    }
-
 
 }

@@ -1,17 +1,13 @@
 package com.song.redcord.bean;
 
 
-import android.app.WallpaperManager;
-import android.content.ComponentName;
-import android.content.Intent;
+import android.app.Activity;
 import android.databinding.Bindable;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
-import com.song.redcord.App;
-import com.song.redcord.LiveWallpaper;
 import com.song.redcord.map.AMapUtil;
 import com.song.redcord.map.JumpUtil;
 
@@ -72,7 +68,7 @@ public class Her extends Lover {
     }
 
     public void onNavClick(View view) {
-        JumpUtil.nav(view.getContext(), location.getLatitude(), location.getLongitude());
+        JumpUtil.startNav(view.getContext(), location.getLatitude(), location.getLongitude());
     }
 
     public void onForbackClick(View view) {
@@ -80,21 +76,21 @@ public class Her extends Lover {
                 + id
                 + "\n\n通过ID可以重新登录"
                 + "\n这是我的ID:\n\n"
-                + loverId
+                + getLoverId()
                 + "\n\n帮我记下，我怕忘了...\n\n「 来自: RedCrod App 」";
-        JumpUtil.shareWechatFriend(view.getContext(), str);
+        JumpUtil.startShare(view.getContext(), str);
     }
 
     public void onSetWallpaperClick(View view) {
-        try {
-            Intent intent = new Intent();
-            intent.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
-            intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                    new ComponentName(App.get().getPackageName(), LiveWallpaper.class.getCanonicalName()));
-            App.get().startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        JumpUtil.startSetWallpaper();
+    }
+
+    public void onPayClick(View view) {
+        JumpUtil.startAliPay((Activity) view.getContext());
+    }
+
+    public void onAboutClick(View view) {
+
     }
 
 }

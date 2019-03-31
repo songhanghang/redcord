@@ -34,7 +34,7 @@
             android:id="@+id/info"
             layout="@layout/info_view"
             android:layout_width="match_parent"
-            android:layout_height="268dp"
+            android:layout_height="314dp"
             android:layout_gravity="bottom"
             bind:her="@{her}" />
 

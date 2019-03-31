@@ -111,7 +111,7 @@ public class MapController implements AMapLocationListener {
                     if (me.isSingle()) {
                         showBindHerView();
                     } else {
-                        final Her her = new Her(me.loverId);
+                        final Her her = new Her(me.getLoverId());
                         me.setLover(her);
                         binding.setHer(her);
                         her.pull(new RequestCallback() {
@@ -187,6 +187,7 @@ public class MapController implements AMapLocationListener {
     private void showBindHerView() {
         final View view = LayoutInflater.from(activity).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
+        editText.setText("5c9f919317b54d0070c38670");
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("配对")
                 .setMessage("请输入Ta的ID进行配对,\n或者发送自己ID给Ta进行配对, \n配对成功后, 对方需重启程序！" )
@@ -230,7 +231,7 @@ public class MapController implements AMapLocationListener {
                         }
                     });
                 } else {
-                    JumpUtil.shareWechatFriend(activity, me.id);
+                    JumpUtil.startShare(activity, me.id);
                 }
             }
         });
@@ -284,7 +285,7 @@ public class MapController implements AMapLocationListener {
             @Override
             public void onSuccess() {
                 Pref.get().saveId(me.id);
-                Her her = new Her(me.loverId);
+                Her her = new Her(me.getLoverId());
                 me.setLover(her);
                 binding.setMe(me);
                 binding.setHer(her);
@@ -309,6 +310,7 @@ public class MapController implements AMapLocationListener {
      * 标记我俩
      */
     private void markUs(Lover me, Lover you) {
+        aMap.clear();
         LatLng melatl = new LatLng(me.location.getLatitude(), me.location.getLongitude());
         LatLng youlatl = new LatLng(you.location.getLatitude(), you.location.getLongitude());
         MarkerOptions meOption = new MarkerOptions().icon(BitmapDescriptorFactory
@@ -430,8 +432,7 @@ public class MapController implements AMapLocationListener {
         // 位置改变
         if (location != null && location.getErrorCode() == 0) {
             this.aMapLocation = location;
-            me.setLocation(location.getLatitude(), location.getLongitude());
-            me.setAddress(location.getAddress());
+            me.setLocation(aMapLocation);
             me.push();
         }
 

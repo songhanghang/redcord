@@ -1,19 +1,27 @@
 package com.song.redcord.map;
 
+import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.didikee.donate.AlipayDonate;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Toast;
+
+import com.song.redcord.App;
+import com.song.redcord.LiveWallpaper;
 
 import java.util.List;
 
 public class JumpUtil {
-    public static void nav(Context context, double lat, double lon) {
+    public static void startNav(Context context, double lat, double lon) {
         try {
             navAmap(context, lat, lon);
         } catch (ActivityNotFoundException e) {
@@ -42,7 +50,7 @@ public class JumpUtil {
         context.startActivity(intent);
     }
 
-    public static void shareWechatFriend(Context context, String content) {
+    public static void startShare(Context context, String content) {
         if (isInstallApp(context, "com.tencent.mm")) {
             Intent intent = new Intent();
             ComponentName cop = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI");
@@ -56,18 +64,47 @@ public class JumpUtil {
         }
     }
 
-    // 判断是否安装指定app
-    private static boolean isInstallApp(Context context, String app_package){
-        final PackageManager packageManager = context.getPackageManager();
-        List<PackageInfo> pInfo = packageManager.getInstalledPackages(0);
-        if (pInfo != null) {
-            for (int i = 0; i < pInfo.size(); i++) {
-                String pn = pInfo.get(i).packageName;
-                if (app_package.equals(pn)) {
-                    return true;
-                }
-            }
+    public static void startSetWallpaper() {
+        try {
+            Intent intent = new Intent();
+            intent.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+            intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                    new ComponentName(App.get().getPackageName(), LiveWallpaper.class.getCanonicalName()));
+            App.get().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return false;
+    }
+
+    public static void startAliPay(Activity activity) {
+        if (activity == null) {
+            return;
+        }
+
+        boolean hasInstalledAlipayClient = AlipayDonate.hasInstalledAlipayClient(activity);
+        if (hasInstalledAlipayClient) {
+            AlipayDonate.startAlipayClient(activity, "FKX08327O1EEEDGRVIWIFB");
+        } else {
+            Toast.makeText(activity, "未安装支付宝客户端", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void startAbout() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(""));
+        App.get().startActivity(intent);
+    }
+
+    // 判断是否安装指定app
+    private static boolean isInstallApp(Context context, String packageName){
+        if (TextUtils.isEmpty(packageName))
+            return false;
+
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }

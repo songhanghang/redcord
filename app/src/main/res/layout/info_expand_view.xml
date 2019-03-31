@@ -76,13 +76,13 @@
                 android:layout_marginBottom="8dp"
                 android:lineSpacingMultiplier="1.5"
                 android:text='@{her.driveInfo == null ? "探路中..." : ("距离: " + her.lineDistance+ "\n驾车: " + her.driveInfo+ "\n骑行: " + her.rideInfo + "\n步行: " + her.workInfo  )}'
-                app:layout_constraintBottom_toTopOf="@+id/expand_see_you"
+                app:layout_constraintBottom_toTopOf="@+id/btn_0"
                 app:layout_constraintStart_toStartOf="@+id/expand_name"
                 app:layout_constraintTop_toBottomOf="@+id/expand_name"
                 tools:text="直线距离" />
 
             <TextView
-                android:id="@+id/expand_see_you"
+                android:id="@+id/btn_0"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:background="@color/colorBlue"
@@ -92,15 +92,30 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/expand_go_back"
+                app:layout_constraintBottom_toTopOf="@+id/btn_2"
+                app:layout_constraintEnd_toStartOf="@+id/btn_1"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/expand_go_back"
+                android:id="@+id/btn_1"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:onClick="@{her::onSetWallpaperClick}"
+                android:text="@string/app_settings_wallpaper"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/btn_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_0" />
+
+            <TextView
+                android:id="@+id/btn_2"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:background="@color/colorGreen"
                 android:gravity="center"
                 android:onClick="@{her::onForbackClick}"
                 android:text="@string/app_go_back"
@@ -108,23 +123,38 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/expand_settings_wallpaper"
-                app:layout_constraintStart_toEndOf="@+id/expand_see_you" />
+                app:layout_constraintEnd_toStartOf="@+id/btn_3"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/expand_settings_wallpaper"
+                android:id="@+id/btn_3"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:background="@color/colorAccent"
                 android:gravity="center"
+                android:onClick="@{her::onPayClick}"
+                android:text="@string/app_pay"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_4"
+                app:layout_constraintStart_toEndOf="@+id/btn_2" />
+
+            <TextView
+                android:id="@+id/btn_4"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:background="@color/colorPurple"
+                android:gravity="center"
                 android:onClick="@{her::onSetWallpaperClick}"
-                android:text="@string/app_settings_wallpaper"
+                android:text="@string/app_about"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/expand_go_back" />
+                app:layout_constraintStart_toEndOf="@+id/btn_3" />
 
         </android.support.constraint.ConstraintLayout>
 

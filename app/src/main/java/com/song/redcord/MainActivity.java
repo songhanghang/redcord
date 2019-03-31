@@ -38,16 +38,6 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
             aMap = mapView.getMap();
         }
 
-        try {
-            Intent intent = new Intent();
-            intent.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
-            intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                    new ComponentName(App.get().getPackageName(), LiveWallpaper.class.getCanonicalName()));
-            App.get().startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         mapController = new MapController(this, aMap, mainBinding);
         new InfoController(findViewById(android.R.id.content));
 

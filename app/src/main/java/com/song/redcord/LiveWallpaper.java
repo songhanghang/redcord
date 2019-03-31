@@ -7,6 +7,7 @@ import android.graphics.Path;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -46,12 +47,13 @@ public class LiveWallpaper extends WallpaperService {
         private boolean isVisible;
         private boolean isTouch;
         private boolean isUp;
-        private Handler handler = new Handler();
         private Me me = new Me(Pref.get().getId());
         private Her her;
-        /**
-         * Draw runloop
-         */
+        private AMapLocationClient mlocationClient;
+        private AMapLocationClientOption mLocationOption = null;
+        private AMapLocation aMapLocation;
+
+        private final Handler handler = new Handler();
         private final Runnable updateDisplay = new Runnable() {
             @Override
             public void run() {
@@ -70,11 +72,6 @@ public class LiveWallpaper extends WallpaperService {
                 doDraw();
             }
         };
-
-        //声明mlocationClient对象
-        public AMapLocationClient mlocationClient;
-        //声明mLocationOption对象
-        public AMapLocationClientOption mLocationOption = null;
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
@@ -105,9 +102,22 @@ public class LiveWallpaper extends WallpaperService {
             me.pull(new RequestCallback() {
                 @Override
                 public void onSuccess() {
-                    her = new Her(me.loverId);
+                    her = new Her(me.getLoverId());
                     me.setLover(her);
-                    her.pull(null);
+                    her.pull(new RequestCallback() {
+                        @Override
+                        public void onSuccess() {
+                            if (aMapLocation != null) {
+                                me.setLocation(aMapLocation);
+                                me.push();
+                            }
+                        }
+
+                        @Override
+                        public void onFail() {
+
+                        }
+                    });
                 }
 
                 @Override
@@ -229,11 +239,11 @@ public class LiveWallpaper extends WallpaperService {
 
         @Override
         public void onLocationChanged(AMapLocation location) {
-
+            Log.i("songhang", " ~~~~~~~~~~ 壁纸定位 ~~~~~~~~~~~");
             // 位置改变
             if (location != null && location.getErrorCode() == 0) {
-                me.setLocation(location.getLatitude(), location.getLongitude());
-                me.setAddress(location.getAddress());
+                this.aMapLocation = location;
+                me.setLocation(location);
                 me.push();
             }
 

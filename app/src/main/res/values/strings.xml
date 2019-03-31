@@ -4,4 +4,6 @@
     <string name="app_see_you">见Ta</string>
     <string name="app_go_back">防丢失</string>
     <string name="app_settings_wallpaper">设置壁纸</string>
+    <string name="app_pay">打赏</string>
+    <string name="app_about">关于</string>
 </resources>

@@ -13,8 +13,8 @@ public class ColorUtil {
     private final static ArgbEvaluator rgbEvaluator = new ArgbEvaluator();
     private final static int[][] colors = new int[][]{
             {App.get().getColor(R.color.colorBlueDark), App.get().getColor(R.color.colorPrimaryDark)},
-            {App.get().getColor(R.color.colorPrimaryDark), App.get().getColor(R.color.colorPurple)},
-            {App.get().getColor(R.color.colorPurple), App.get().getColor(R.color.colorGreyDark)}
+            {App.get().getColor(R.color.colorPrimaryDark), App.get().getColor(R.color.colorPurpleDark)},
+            {App.get().getColor(R.color.colorPurpleDark), App.get().getColor(R.color.colorGreyDark)}
     };
 
     private ColorUtil() {
