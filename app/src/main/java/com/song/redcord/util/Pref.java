@@ -7,6 +7,7 @@ import com.song.redcord.App;
 
 public class Pref {
     private static final String ID = "id";
+    private static final String FIEST_SET_WALLPAPER = "first_set_wallpaper";
     private SharedPreferences preferences = App.get().getSharedPreferences("me", Context.MODE_PRIVATE);
 
     private Pref() {
@@ -30,6 +31,16 @@ public class Pref {
 
     public String getId() {
         return preferences.getString(ID, "");
+    }
+
+    public void setWallpaper() {
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean(FIEST_SET_WALLPAPER, false);
+        edit.apply();
+    }
+
+    public boolean isFirstSetWallpaper() {
+        return preferences.getBoolean(FIEST_SET_WALLPAPER, true);
     }
 
 }

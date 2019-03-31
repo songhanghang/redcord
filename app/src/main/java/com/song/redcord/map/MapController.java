@@ -189,7 +189,7 @@ public class MapController implements AMapLocationListener {
         final EditText editText = view.findViewById(R.id.edit);
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("配对")
-                .setMessage("请输入Ta的ID进行配对,\n或者发送自己ID给Ta进行配对, \n配对成功后, 对方需重启程序！" )
+                .setMessage("请输入Ta的ID进行配对,\n或者发送自己ID给Ta进行配对, \n配对成功后, 对方需重启程序！")
                 .setView(view)
                 .setCancelable(false)
                 .setPositiveButton("发送我的ID", null)
@@ -215,8 +215,6 @@ public class MapController implements AMapLocationListener {
                                 me.setLover(her);
                                 me.push();
                                 her.push();
-                                her.onSetWallpaperClick(null);
-                                Toast.makeText(activity, "配对成功，设置动态壁纸吧", Toast.LENGTH_LONG).show();
                                 refreshView(me, her);
                                 dialog.dismiss();
                             } else {
@@ -226,7 +224,7 @@ public class MapController implements AMapLocationListener {
 
                         @Override
                         public void onFail() {
-                            Toast.makeText(activity, "配对失败", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "配对失败, 请检查ID", Toast.LENGTH_LONG).show();
                         }
                     });
                 } else {
@@ -298,6 +296,12 @@ public class MapController implements AMapLocationListener {
     }
 
     private void refreshView(@NonNull Me me, @NonNull Her her) {
+        if (Pref.get().isFirstSetWallpaper()) {
+            JumpUtil.startSetWallpaper();
+            Pref.get().setWallpaper();
+            Toast.makeText(activity, "配对成功，设置动态壁纸吧", Toast.LENGTH_LONG).show();
+        }
+
         me.setLocation(aMapLocation);
         // 经纬度 0|0 视为尚未定位成功
         if (me.location.getLongitude() == 0 || me.location.getLatitude() == 0) {
@@ -430,15 +434,19 @@ public class MapController implements AMapLocationListener {
     public void onLocationChanged(AMapLocation location) {
         Log.i(TAG.V, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 地图界面触发定位  ~~~~~~~~~~~~~~~~~~~~~~~~~~ ");
 
-        if (me == null) {
-            return;
-        }
-
         // 位置改变
         if (location != null && location.getErrorCode() == 0) {
             this.aMapLocation = location;
+            if (me == null) {
+                return;
+            }
+
             me.setLocation(aMapLocation);
             me.push();
+        }
+
+        if (me == null) {
+            return;
         }
 
         final Lover lover = me.getLover();
