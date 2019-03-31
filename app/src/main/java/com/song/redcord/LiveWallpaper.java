@@ -7,7 +7,6 @@ import android.graphics.Path;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -19,6 +18,7 @@ import com.song.redcord.bean.Her;
 import com.song.redcord.bean.Lover;
 import com.song.redcord.bean.Me;
 import com.song.redcord.interfaces.RequestCallback;
+import com.song.redcord.util.ColorUtil;
 import com.song.redcord.util.Pref;
 import com.song.redcord.util.ScreenUtil;
 
@@ -32,7 +32,7 @@ public class LiveWallpaper extends WallpaperService {
 
     private class RedcordEngine extends Engine implements AMapLocationListener {
         private static final int MAX_DISTANCE = 600;
-        private static final int OFFSET = 20;
+        private static final int OFFSET = 10;
 
         private int leftX, leftY;
         private int rightX, rightY;
@@ -81,6 +81,7 @@ public class LiveWallpaper extends WallpaperService {
             super.onCreate(surfaceHolder);
             paint = new Paint();
             paint.setAntiAlias(true);
+            paint.setStrokeWidth(10);
 
             tipsTextPaint = new Paint();
             tipsTextPaint.setAntiAlias(true);
@@ -154,7 +155,9 @@ public class LiveWallpaper extends WallpaperService {
                     return;
                 }
                 // Draw background
-                canvas.drawColor(getColor(R.color.colorBlue));
+                float f = (leftY - centerY + MAX_DISTANCE) / (float) (2 * MAX_DISTANCE);
+                f = Math.min(1 , Math.max(f, 0));
+                canvas.drawColor(ColorUtil.getColor(f));
 
                 paint.setColor(Color.WHITE);
                 //画4个点
@@ -174,7 +177,6 @@ public class LiveWallpaper extends WallpaperService {
                 }
 
                 //绘制连线
-                paint.setStrokeWidth(10);
 
                 //画二阶贝塞尔曲线
                 paint.setColor(getColor(R.color.colorAccent));

@@ -35,7 +35,12 @@ public class ScreenUtil {
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
         display.getRealMetrics(dm);
-        sWidth = dm.widthPixels;
-        sHeight = dm.heightPixels;
+        if (dm.widthPixels > dm.heightPixels) {
+            sWidth = dm.heightPixels;
+            sHeight = dm.widthPixels;
+        } else {
+            sWidth = dm.widthPixels;
+            sHeight = dm.heightPixels;
+        }
     }
 }
