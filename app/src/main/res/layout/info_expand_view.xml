@@ -147,7 +147,7 @@
                 android:layout_height="48dp"
                 android:background="@color/colorPurple"
                 android:gravity="center"
-                android:onClick="@{her::onSetWallpaperClick}"
+                android:onClick="@{her::onAboutClick}"
                 android:text="@string/app_about"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"

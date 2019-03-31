@@ -22,6 +22,7 @@ import com.song.redcord.interfaces.RequestCallback;
 import com.song.redcord.util.ColorUtil;
 import com.song.redcord.util.Pref;
 import com.song.redcord.util.ScreenUtil;
+import com.song.redcord.util.TAG;
 
 public class LiveWallpaper extends WallpaperService {
 
@@ -34,7 +35,7 @@ public class LiveWallpaper extends WallpaperService {
     private class RedcordEngine extends Engine implements AMapLocationListener {
         private static final int MAX_DISTANCE = 600;
         private static final int OFFSET = 10;
-
+        private static final long INTERVAL = 60 * 1000 * 5;
         private int leftX, leftY;
         private int rightX, rightY;
         private int centerX, centerY;
@@ -130,7 +131,7 @@ public class LiveWallpaper extends WallpaperService {
             mLocationOption = new AMapLocationClientOption();
             mlocationClient.setLocationListener(this);
             mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
-            mLocationOption.setInterval(20000);
+            mLocationOption.setInterval(INTERVAL);
             mlocationClient.setLocationOption(mLocationOption);
         }
 
@@ -239,7 +240,7 @@ public class LiveWallpaper extends WallpaperService {
 
         @Override
         public void onLocationChanged(AMapLocation location) {
-            Log.i("songhang", " ~~~~~~~~~~ 壁纸定位 ~~~~~~~~~~~");
+            Log.i(TAG.V, " ~~~~~~~~~~ 壁纸触发定位 ~~~~~~~~~~~");
             // 位置改变
             if (location != null && location.getErrorCode() == 0) {
                 this.aMapLocation = location;

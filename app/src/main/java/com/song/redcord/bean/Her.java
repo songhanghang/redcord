@@ -90,7 +90,7 @@ public class Her extends Lover {
     }
 
     public void onAboutClick(View view) {
-
+        JumpUtil.startAbout();
     }
 
 }

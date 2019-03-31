@@ -12,6 +12,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.song.redcord.interfaces.RequestCallback;
+import com.song.redcord.util.TAG;
 
 /**
  * 我的位置只上传不下载
@@ -82,7 +83,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
             public void done(AVObject object, AVException e) {
                 if (e == null) {
                     address = object.getString(AV_KEY_ADDRESS);
-                    Log.i("songhang", Lover.this.getClass() + " +++++ pull loveid " + loverId);
+                    Log.i(TAG.V, Lover.this.getClass() + " +++++ pull loveid " + loverId);
 
                     loverId = object.getString(AV_KEY_LOVE_ID);
                     if (allowPullLocation()) {
@@ -113,13 +114,8 @@ public abstract class Lover extends BaseObservable implements DataServer {
             love.put(AV_KEY_LAT, location.getLatitude());
             love.put(AV_KEY_LON, location.getLongitude());
         }
-        Log.i("songhang", " ------- push loveid " + loverId);
-        love.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                Log.i("songhang", "AVEX " + e);
-            }
-        });
+        Log.i(TAG.V, Lover.this.getClass() + " ------- push loveid " + loverId);
+        love.saveInBackground();
     }
 
 

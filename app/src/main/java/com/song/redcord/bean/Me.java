@@ -1,7 +1,4 @@
 package com.song.redcord.bean;
-
-import android.support.annotation.NonNull;
-
 import com.amap.api.location.AMapLocation;
 
 public class Me extends Lover {
@@ -21,7 +18,10 @@ public class Me extends Lover {
         return true;
     }
 
-    public void setLocation(@NonNull AMapLocation aMapLocation) {
+    public void setLocation(AMapLocation aMapLocation) {
+        if (aMapLocation == null) {
+            return;
+        }
         location.setLatitude(aMapLocation.getLatitude());
         location.setLongitude(aMapLocation.getLongitude());
         setAddress(aMapLocation.getAddress());

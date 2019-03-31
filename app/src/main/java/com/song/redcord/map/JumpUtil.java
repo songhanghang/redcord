@@ -89,9 +89,9 @@ public class JumpUtil {
         }
     }
 
-    public void startAbout() {
+    public static void startAbout() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(""));
+        intent.setData(Uri.parse("https://github.com/songhanghang/redcord/blob/master/README.md"));
         App.get().startActivity(intent);
     }
 

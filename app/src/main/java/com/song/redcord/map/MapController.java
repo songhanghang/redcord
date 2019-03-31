@@ -45,6 +45,7 @@ import com.song.redcord.bean.Me;
 import com.song.redcord.databinding.ActivityMainBinding;
 import com.song.redcord.interfaces.RequestCallback;
 import com.song.redcord.util.Pref;
+import com.song.redcord.util.TAG;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,7 +53,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 地图控制器
  */
 public class MapController implements AMapLocationListener {
-    private static final String TAG = "MapController";
     private final AMap aMap;
     private final AtomicBoolean hasScale = new AtomicBoolean(false);
     private Me me;
@@ -72,7 +72,7 @@ public class MapController implements AMapLocationListener {
         aMap.setLocationSource(new LocationSource() {
             @Override
             public void activate(OnLocationChangedListener onLocationChangedListener) {
-                Log.i(TAG, "+++++++++++ activate ");
+                Log.i(TAG.V, "+++++++++++ activate ++++++++");
                 if (locationClient == null) {
                     locationClient = new AMapLocationClient(activity);
                     locationOption = new AMapLocationClientOption();
@@ -86,7 +86,7 @@ public class MapController implements AMapLocationListener {
 
             @Override
             public void deactivate() {
-                Log.i(TAG, "-------- deactivate -------");
+                Log.i(TAG.V, "-------- deactivate -------");
                 if (locationClient != null) {
                     locationClient.stopLocation();
                     locationClient.onDestroy();
@@ -187,7 +187,6 @@ public class MapController implements AMapLocationListener {
     private void showBindHerView() {
         final View view = LayoutInflater.from(activity).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
-        editText.setText("5c9f919317b54d0070c38670");
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("配对")
                 .setMessage("请输入Ta的ID进行配对,\n或者发送自己ID给Ta进行配对, \n配对成功后, 对方需重启程序！" )
@@ -299,6 +298,12 @@ public class MapController implements AMapLocationListener {
     }
 
     private void refreshView(@NonNull Me me, @NonNull Her her) {
+        me.setLocation(aMapLocation);
+        // 经纬度 0|0 视为尚未定位成功
+        if (me.location.getLongitude() == 0 || me.location.getLatitude() == 0) {
+            return;
+        }
+
         markUs(me, her);
         navigation(me, her);
         if (!hasScale.getAndSet(true)) {
@@ -423,7 +428,7 @@ public class MapController implements AMapLocationListener {
 
     @Override
     public void onLocationChanged(AMapLocation location) {
-        Log.i("songhang", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 定位定位  ~~~~~~~~~~~~~~~~~~~~~~~~~~ ");
+        Log.i(TAG.V, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 地图界面触发定位  ~~~~~~~~~~~~~~~~~~~~~~~~~~ ");
 
         if (me == null) {
             return;
@@ -444,7 +449,6 @@ public class MapController implements AMapLocationListener {
         lover.pull(new RequestCallback() {
             @Override
             public void onSuccess() {
-                Log.i(TAG, "you : " + lover.location.getLatitude() + "    " + lover.location.getLongitude());
                 refreshView(me, (Her) lover);
             }
 
