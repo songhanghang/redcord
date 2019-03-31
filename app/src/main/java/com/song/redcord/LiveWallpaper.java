@@ -31,7 +31,6 @@ public class LiveWallpaper extends WallpaperService {
         return new RedcordEngine();
     }
 
-
     private class RedcordEngine extends Engine implements AMapLocationListener {
         private static final int MAX_DISTANCE = 600;
         private static final int OFFSET = 10;
