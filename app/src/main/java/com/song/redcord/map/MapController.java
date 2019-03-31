@@ -2,7 +2,9 @@ package com.song.redcord.map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -38,6 +40,7 @@ import com.amap.api.services.route.WalkRouteResult;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
+import com.song.redcord.App;
 import com.song.redcord.R;
 import com.song.redcord.bean.Her;
 import com.song.redcord.bean.Lover;
@@ -52,7 +55,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 地图控制器
  */
-public class MapController implements AMapLocationListener {
+public class MapController implements AMapLocationListener, Application.ActivityLifecycleCallbacks {
     private final AMap aMap;
     private final AtomicBoolean hasScale = new AtomicBoolean(false);
     private Me me;
@@ -97,6 +100,7 @@ public class MapController implements AMapLocationListener {
         aMap.getUiSettings().setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);
         aMap.setMyLocationEnabled(true);
 
+        App.get().registerActivityLifecycleCallbacks(this);
         check();
     }
 
@@ -465,6 +469,45 @@ public class MapController implements AMapLocationListener {
 
             }
         });
+
+    }
+
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+        if (locationClient != null && !locationClient.isStarted()) {
+            locationClient.startLocation();
+        }
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+        if (locationClient != null) {
+            locationClient.stopLocation();
+        }
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
 
     }
 }
