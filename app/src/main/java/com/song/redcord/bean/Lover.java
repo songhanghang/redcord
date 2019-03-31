@@ -10,7 +10,6 @@ import android.util.Log;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.SaveCallback;
 import com.song.redcord.interfaces.RequestCallback;
 import com.song.redcord.util.TAG;
 
