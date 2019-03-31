@@ -1,5 +1,6 @@
-# redcord
-红绳-连接你我
+# Redcord
+>红绳-连接你我
+[https://github.com/songhanghang/redcord](https://github.com/songhanghang/redcord)
 
 是否遇到过，有急事找你的Ta, 但是电话打不通，微信没人接，即使科技再发达，找Ta时你也抓瞎！
 
@@ -32,6 +33,8 @@ emmmmm....
 
 
 ###软件功能介绍
+![图片](http://wx3.sinaimg.cn/large/006292TQly1g1m6tijut9g30e00ucq7i.gif)
+![图片](http://wx3.sinaimg.cn/large/006292TQly1g1m6kq5rbuj30p10hq45s.jpg)
 #### 注册与登录
 注册不需要手机号,不需要邮箱（不会上传你的隐私），直接点击注册即可，注册成功后会生成你的ID, 显示在屏幕的左上角，这是你以后登录的唯一凭证，注册成功后，需要配对TA的ID, 才能够使用，或者发送自己ID给Ta, 让对方完成配对。配对完成请及时在详情页备份两人Id。
 你的ID与Ta的ID唯一绑定，绑定后不可解绑，或者与他人绑定。
@@ -57,5 +60,10 @@ App地图界面，左上角显示两人ID, 中间为彼此位置及驾车导航�
 2. 用户隐私 `没有上传你任何信息，自行查看代码`
 3. 数据服务 `用的leancloud提供数据支持，每天只有3万次免费请求，所以急需您的支持`
 
+### 联系方式
+ 
 
+ 邮箱: 1131442853@qq.com
+
+[github: https://github.com/songhanghang](https://github.com/songhanghang)
 
