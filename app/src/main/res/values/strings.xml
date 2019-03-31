@@ -2,7 +2,7 @@
     <string name="app_name">红绳</string>
     <string name="app_need_location">没有权限，无法为连接您的TA</string>
     <string name="app_see_you">见Ta</string>
-    <string name="app_go_back">防丢失</string>
+    <string name="app_go_back">备份</string>
     <string name="app_settings_wallpaper">设置壁纸</string>
     <string name="app_pay">打赏</string>
     <string name="app_about">关于</string>
