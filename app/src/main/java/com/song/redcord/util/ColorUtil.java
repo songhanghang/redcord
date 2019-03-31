@@ -22,6 +22,7 @@ public class ColorUtil {
     }
 
     public static int getColor(float fraction) {
+        calendar.setTimeInMillis(System.currentTimeMillis());
         int h = calendar.get(Calendar.HOUR_OF_DAY);
         if (h >= 7 && h <= 12) { // 上午蓝
             return (int) rgbEvaluator.evaluate(fraction, colors[0][0], colors[0][1]);

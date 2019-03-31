@@ -163,9 +163,9 @@ public class MapController implements AMapLocationListener, Application.Activity
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(editText.getText().toString())) {
-                    createMe(dialog);
+                    register(dialog);
                 } else {
-                    pullMe(editText);
+                    login(dialog, editText);
                 }
             }
         });
@@ -256,7 +256,7 @@ public class MapController implements AMapLocationListener, Application.Activity
 
     }
 
-    private void createMe(final AlertDialog dialog) {
+    private void register(final AlertDialog dialog) {
         final AVObject love = new AVObject(Lover.AV_CLASS);
         if (aMapLocation != null) {
             love.put(Lover.AV_KEY_LAT, aMapLocation.getLatitude());
@@ -280,21 +280,33 @@ public class MapController implements AMapLocationListener, Application.Activity
         });
     }
 
-    private void pullMe(EditText editText) {
+    private void login(final AlertDialog dialog, EditText editText) {
         me = new Me(editText.getText().toString());
         me.pull(new RequestCallback() {
             @Override
             public void onSuccess() {
                 Pref.get().saveId(me.id);
-                Her her = new Her(me.getLoverId());
+                final Her her = new Her(me.getLoverId());
                 me.setLover(her);
                 binding.setMe(me);
                 binding.setHer(her);
+                her.pull(new RequestCallback() {
+                    @Override
+                    public void onSuccess() {
+                        refreshView(me, her);
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFail() {
+                        Toast.makeText(activity, "拉取Ta数据失败", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
             @Override
             public void onFail() {
-                Toast.makeText(activity, "获取失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "登录失败", Toast.LENGTH_LONG).show();
             }
         });
     }

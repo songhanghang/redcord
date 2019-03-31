@@ -2,9 +2,6 @@ package com.song.redcord;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.WallpaperManager;
-import android.content.ComponentName;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
