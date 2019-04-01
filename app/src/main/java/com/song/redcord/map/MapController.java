@@ -145,118 +145,84 @@ public class MapController implements AMapLocationListener, Application.Activity
     private void showFirstStartView() {
         final View view = LayoutInflater.from(activity).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
-        final AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle("注册与登录")
-                .setMessage("新用户请注册,\n老用户可以从Ta那里获取你的ID登录！")
+        editText.setHint(R.string.app_input_you_id);
+        new AlertDialog.Builder(activity)
+                .setTitle(R.string.app_login)
+                .setMessage(R.string.app_input_you_id)
                 .setView(view)
                 .setCancelable(false)
-                .setPositiveButton("注册", null)
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.app_login, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        activity.finish();
+                        if (TextUtils.isEmpty(editText.getText().toString())) {
+                            login(dialog, editText);
+                        } else {
+                            Toast.makeText(activity, R.string.app_input_right_id, Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
-                .create();
-        dialog.show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(editText.getText().toString())) {
-                    register(dialog);
-                } else {
-                    login(dialog, editText);
-                }
-            }
-        });
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String str = TextUtils.isEmpty(s.toString()) ? "注册" : "登录";
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(str);
-            }
-        });
+                .setNegativeButton(R.string.app_register, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        register(dialog);
+                    }
+                })
+                .create()
+                .show();
     }
 
     private void showBindHerView() {
         final View view = LayoutInflater.from(activity).inflate(R.layout.edit_dialog, null);
         final EditText editText = view.findViewById(R.id.edit);
-        final AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle("配对")
-                .setMessage("请输入Ta的ID进行配对,\n或者发送自己ID给Ta进行配对, \n配对成功后, 对方需重启程序！")
+        editText.setHint(R.string.app_input_her_id);
+        new AlertDialog.Builder(activity)
+                .setTitle(R.string.app_link_her)
+                .setMessage(activity.getString(R.string.app_link_tips, me.id))
                 .setView(view)
                 .setCancelable(false)
-                .setPositiveButton("发送我的ID", null)
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.app_link, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        activity.finish();
+                    public void onClick(final DialogInterface dialog, int which) {
+                        String id = editText.getText().toString();
+                        if (!TextUtils.isEmpty(id)) {
+                            final Her her = new Her(id);
+                            binding.setHer(her);
+                            her.pull(new RequestCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    if (her.isSingle()) {
+                                        me.setLover(her);
+                                        me.push();
+                                        her.push();
+                                        refreshView(me, her);
+                                        dialog.dismiss();
+                                    } else {
+                                        Toast.makeText(activity, R.string.app_her_not_alone, Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFail() {
+                                    Toast.makeText(activity, R.string.app_link_err, Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(activity, R.string.app_input_right_id, Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
-                .create();
-        dialog.show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String id = editText.getText().toString();
-                if (!TextUtils.isEmpty(id)) {
-                    final Her her = new Her(id);
-                    binding.setHer(her);
-                    her.pull(new RequestCallback() {
-                        @Override
-                        public void onSuccess() {
-                            if (her.isSingle()) {
-                                me.setLover(her);
-                                me.push();
-                                her.push();
-                                refreshView(me, her);
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(activity, "抱歉！名花有主", Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFail() {
-                            Toast.makeText(activity, "配对失败, 请检查ID", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    JumpUtil.startShare(activity, me.id);
-                }
-            }
-        });
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String str = TextUtils.isEmpty(s.toString()) ? "发送我的ID" : "配对并设置";
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(str);
-            }
-        });
+                .setNegativeButton(R.string.app_send_to_her, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        JumpUtil.startShare(activity, me.id);
+                    }
+                })
+                .create()
+                .show();
 
     }
 
-    private void register(final AlertDialog dialog) {
+    private void register(final DialogInterface dialog) {
         final AVObject love = new AVObject(Lover.AV_CLASS);
         if (aMapLocation != null) {
             love.put(Lover.AV_KEY_LAT, aMapLocation.getLatitude());
@@ -272,15 +238,15 @@ public class MapController implements AMapLocationListener, Application.Activity
                     Pref.get().saveId(me.id);
                     dialog.dismiss();
                     showBindHerView();
-                    Toast.makeText(activity, "注册成功", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, R.string.app_register_success, Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(activity, "注册失败", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, R.string.app_register_err, Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-    private void login(final AlertDialog dialog, EditText editText) {
+    private void login(final DialogInterface dialog, EditText editText) {
         me = new Me(editText.getText().toString());
         me.pull(new RequestCallback() {
             @Override
@@ -299,14 +265,14 @@ public class MapController implements AMapLocationListener, Application.Activity
 
                     @Override
                     public void onFail() {
-                        Toast.makeText(activity, "拉取Ta数据失败", Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, R.string.app_pull_err, Toast.LENGTH_LONG).show();
                     }
                 });
             }
 
             @Override
             public void onFail() {
-                Toast.makeText(activity, "登录失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, R.string.app_login_err, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -320,7 +286,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                 }
             }, 500);
             Pref.get().setWallpaper();
-            Toast.makeText(activity, "配对成功，设置动态壁纸吧", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, R.string.app_link_success, Toast.LENGTH_LONG).show();
         }
 
         me.setLocation(aMapLocation);
@@ -412,7 +378,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                     int dur = (int) drivePath.getDuration();
                     her.setDriveInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
                 } else {
-                    her.setDriveInfo("不知哪里出了问题...");
+                    her.setDriveInfo(activity.getString(R.string.app_nav_drive_err));
                 }
                 her.notifyChange();
             }
@@ -428,7 +394,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                     int dur = (int) walkPath.getDuration();
                     her.setWorkInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
                 } else {
-                    her.setWorkInfo("可能太远了, 要不换个交通工具?");
+                    her.setWorkInfo(activity.getString(R.string.app_nav_work_err));
                 }
                 her.notifyChange();
             }
@@ -444,7 +410,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                     int dur = (int) ridePath.getDuration();
                     her.setRideInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
                 } else {
-                    her.setRideInfo("也许不适合骑车,算了吧...");
+                    her.setWorkInfo(activity.getString(R.string.app_nav_ride_err));
                 }
                 her.notifyChange();
             }
