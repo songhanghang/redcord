@@ -24,6 +24,13 @@ import com.song.redcord.util.Pref;
 import com.song.redcord.util.ScreenUtil;
 import com.song.redcord.util.TAG;
 
+/**
+ * 锁屏时间过长,会导致无法继续定位,需要重新拉起定位服务
+ * 见高德文档
+ * 目前手机设备在长时间黑屏或锁屏时CPU会休眠，
+ * 这导致定位SDK不能正常进行位置更新。
+ * https://lbs.amap.com/api/android-location-sdk/guide/android-location/getlocation
+ */
 public class LiveWallpaper extends WallpaperService {
 
     @Override
@@ -49,8 +56,8 @@ public class LiveWallpaper extends WallpaperService {
         private boolean isUp;
         private Me me = new Me(Pref.get().getId());
         private Her her;
-        private AMapLocationClient mlocationClient;
-        private AMapLocationClientOption mLocationOption = null;
+        private AMapLocationClient locationClient;
+        private AMapLocationClientOption locationOption = null;
         private AMapLocation aMapLocation;
         private long lastLocationTime;
 
@@ -127,12 +134,6 @@ public class LiveWallpaper extends WallpaperService {
                 }
             });
 
-            mlocationClient = new AMapLocationClient(LiveWallpaper.this);
-            mLocationOption = new AMapLocationClientOption();
-            mlocationClient.setLocationListener(this);
-            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-            mLocationOption.setInterval(INTERVAL);
-            mlocationClient.setLocationOption(mLocationOption);
         }
 
         @Override
@@ -140,17 +141,17 @@ public class LiveWallpaper extends WallpaperService {
             super.onVisibilityChanged(visible);
             isVisible = visible;
             if (visible) {
-                mlocationClient.startLocation();
+                startLocation();
                 doDraw();
             } else {
-                mlocationClient.stopLocation();
+                stopLocation();
             }
         }
 
         @Override
         public void onDestroy() {
             super.onDestroy();
-            mlocationClient.onDestroy();
+            locationClient.onDestroy();
         }
 
         private void doDraw() {
@@ -241,11 +242,6 @@ public class LiveWallpaper extends WallpaperService {
         @Override
         public void onLocationChanged(AMapLocation location) {
             Log.i(TAG.V, " ~~~~~~~~~~ 壁纸触发定位 ~~~~~~~~~~~ " + location);
-            if (this.aMapLocation != null && System.currentTimeMillis() - lastLocationTime < INTERVAL) {
-                return;
-            }
-
-            lastLocationTime = System.currentTimeMillis();
 
             // 位置改变
             if (location != null && location.getErrorCode() == 0) {
@@ -260,6 +256,29 @@ public class LiveWallpaper extends WallpaperService {
             }
 
             lover.pull(null);
+        }
+
+
+        public void startLocation() {
+            if (System.currentTimeMillis() - lastLocationTime < INTERVAL) {
+                return;
+            }
+
+            lastLocationTime = System.currentTimeMillis();
+            locationClient = new AMapLocationClient(LiveWallpaper.this);
+            locationOption = new AMapLocationClientOption();
+            locationClient.setLocationListener(this);
+            locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            locationClient.setLocationOption(locationOption);
+            locationClient.startLocation();
+        }
+
+        public void stopLocation() {
+            if (locationClient != null) {
+                locationClient.stopLocation();
+                locationClient.onDestroy();
+                locationClient = null;
+            }
         }
     }
 
