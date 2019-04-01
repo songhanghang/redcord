@@ -130,7 +130,7 @@ public class LiveWallpaper extends WallpaperService {
             mlocationClient = new AMapLocationClient(LiveWallpaper.this);
             mLocationOption = new AMapLocationClientOption();
             mlocationClient.setLocationListener(this);
-            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
             mLocationOption.setInterval(INTERVAL);
             mlocationClient.setLocationOption(mLocationOption);
         }
@@ -240,7 +240,7 @@ public class LiveWallpaper extends WallpaperService {
 
         @Override
         public void onLocationChanged(AMapLocation location) {
-            Log.i(TAG.V, " ~~~~~~~~~~ 壁纸触发定位 ~~~~~~~~~~~");
+            Log.i(TAG.V, " ~~~~~~~~~~ 壁纸触发定位 ~~~~~~~~~~~ " + location);
             if (this.aMapLocation != null && System.currentTimeMillis() - lastLocationTime < INTERVAL) {
                 return;
             }

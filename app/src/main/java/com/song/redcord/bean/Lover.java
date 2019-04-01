@@ -82,7 +82,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
             public void done(AVObject object, AVException e) {
                 if (e == null) {
                     address = object.getString(AV_KEY_ADDRESS);
-                    Log.i(TAG.V, Lover.this.getClass() + " +++++ pull loveid " + loverId);
+                    Log.i(TAG.V, Lover.this.getClass() + " +++++ pull id "+  id + " loveid " + loverId);
 
                     loverId = object.getString(AV_KEY_LOVE_ID);
                     if (allowPullLocation()) {
@@ -113,7 +113,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
             love.put(AV_KEY_LAT, location.getLatitude());
             love.put(AV_KEY_LON, location.getLongitude());
         }
-        Log.i(TAG.V, Lover.this.getClass() + " ------- push loveid " + loverId);
+        Log.i(TAG.V, Lover.this.getClass() + " ------- push id "+  id + " loveid " + loverId);
         love.saveInBackground();
     }
 

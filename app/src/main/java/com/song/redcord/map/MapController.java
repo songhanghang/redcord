@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -81,7 +82,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                     locationOption = new AMapLocationClientOption();
                     locationOption.setInterval(10000);
                     locationClient.setLocationListener(MapController.this);
-                    locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+                    locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
                     locationClient.setLocationOption(locationOption);
                     locationClient.startLocation();
                 }
@@ -313,7 +314,12 @@ public class MapController implements AMapLocationListener, Application.Activity
 
     private void refreshView(@NonNull Me me, @NonNull Her her) {
         if (Pref.get().isFirstSetWallpaper()) {
-            JumpUtil.startSetWallpaper();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    JumpUtil.startSetWallpaper();
+                }
+            }, 500);
             Pref.get().setWallpaper();
             Toast.makeText(activity, "配对成功，设置动态壁纸吧", Toast.LENGTH_LONG).show();
         }
