@@ -57,6 +57,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 地图控制器
  */
 public class MapController implements AMapLocationListener, Application.ActivityLifecycleCallbacks {
+    private static final long LOCATION_INTERVAL = 10000;
     private final AMap aMap;
     private final AtomicBoolean hasScale = new AtomicBoolean(false);
     private Me me;
@@ -76,11 +77,10 @@ public class MapController implements AMapLocationListener, Application.Activity
         aMap.setLocationSource(new LocationSource() {
             @Override
             public void activate(OnLocationChangedListener onLocationChangedListener) {
-                Log.i(TAG.V, "+++++++++++ activate ++++++++");
                 if (locationClient == null) {
                     locationClient = new AMapLocationClient(activity);
                     locationOption = new AMapLocationClientOption();
-                    locationOption.setInterval(10000);
+                    locationOption.setInterval(LOCATION_INTERVAL);
                     locationClient.setLocationListener(MapController.this);
                     locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
                     locationClient.setLocationOption(locationOption);
@@ -90,7 +90,6 @@ public class MapController implements AMapLocationListener, Application.Activity
 
             @Override
             public void deactivate() {
-                Log.i(TAG.V, "-------- deactivate -------");
                 if (locationClient != null) {
                     locationClient.stopLocation();
                     locationClient.onDestroy();
@@ -454,7 +453,7 @@ public class MapController implements AMapLocationListener, Application.Activity
 
     @Override
     public void onLocationChanged(AMapLocation location) {
-        Log.i(TAG.V, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 地图界面触发定位  ~~~~~~~~~~~~~~~~~~~~~~~~~~ ");
+        Log.i(TAG.V, "~~~~~~~~~~~~~~ 地图界面触发定位  ~~~~~~~~~~~~~ " + location);
 
         // 位置改变
         if (location != null && location.getErrorCode() == 0) {

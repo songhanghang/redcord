@@ -41,7 +41,9 @@ public class LiveWallpaper extends WallpaperService {
     private class RedcordEngine extends Engine implements AMapLocationListener {
         private static final int MAX_DISTANCE = 600;
         private static final int OFFSET = 10;
-        private static final long INTERVAL = 60 * 1000 * 5;
+        private static final long START_LOCATION_INTERVAL = 60 * 1000 * 5;
+        private static final long LOCATION_INTERVAL = 60000;
+        private static final long STOP_DELAY_INTERVAL =  2000;
         private int leftX, leftY;
         private int rightX, rightY;
         private int centerX, centerY;
@@ -56,6 +58,7 @@ public class LiveWallpaper extends WallpaperService {
         private boolean isUp;
         private Me me = new Me(Pref.get().getId());
         private Her her;
+        private Handler locationHandler = new Handler();
         private AMapLocationClient locationClient;
         private AMapLocationClientOption locationOption = null;
         private AMapLocation aMapLocation;
@@ -133,7 +136,6 @@ public class LiveWallpaper extends WallpaperService {
 
                 }
             });
-
         }
 
         @Override
@@ -144,7 +146,7 @@ public class LiveWallpaper extends WallpaperService {
                 startLocation();
                 doDraw();
             } else {
-                stopLocation();
+                stopLocationDelay();
             }
         }
 
@@ -175,8 +177,6 @@ public class LiveWallpaper extends WallpaperService {
                 //画4个点
                 canvas.drawCircle(startX, startY, 10, paint);
                 canvas.drawCircle(endX, endY, 10, paint);
-//                canvas.drawCircle(leftX, leftY, 8, paint);
-//                canvas.drawCircle(rightX, rightY, 8, paint);
 
 
                 // 画距离
@@ -241,7 +241,7 @@ public class LiveWallpaper extends WallpaperService {
 
         @Override
         public void onLocationChanged(AMapLocation location) {
-            Log.i(TAG.V, " ~~~~~~~~~~ 壁纸触发定位 ~~~~~~~~~~~ " + location);
+            Log.i(TAG.V, " ~~~~~~~~~~ 壁纸定位完成 ~~~~~~~~~~~ " + location);
 
             // 位置改变
             if (location != null && location.getErrorCode() == 0) {
@@ -258,27 +258,41 @@ public class LiveWallpaper extends WallpaperService {
             lover.pull(null);
         }
 
-
-        public void startLocation() {
-            if (System.currentTimeMillis() - lastLocationTime < INTERVAL) {
+        /**
+         * 保证每次start后，有2s的定位时间
+         */
+        private void startLocation() {
+            if (System.currentTimeMillis() - lastLocationTime < START_LOCATION_INTERVAL) {
                 return;
             }
-
             lastLocationTime = System.currentTimeMillis();
+
+            stopLocation();
+            locationHandler.removeCallbacksAndMessages(null);
             locationClient = new AMapLocationClient(LiveWallpaper.this);
             locationOption = new AMapLocationClientOption();
-            locationClient.setLocationListener(this);
             locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            locationOption.setInterval(LOCATION_INTERVAL);
+            locationClient.setLocationListener(this);
             locationClient.setLocationOption(locationOption);
             locationClient.startLocation();
         }
 
-        public void stopLocation() {
+        private void stopLocation() {
             if (locationClient != null) {
                 locationClient.stopLocation();
                 locationClient.onDestroy();
                 locationClient = null;
             }
+        }
+
+        private void stopLocationDelay() {
+            locationHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    stopLocation();
+                }
+            }, STOP_DELAY_INTERVAL);
         }
     }
 
