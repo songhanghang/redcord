@@ -154,7 +154,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                 .setPositiveButton(R.string.app_login, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (TextUtils.isEmpty(editText.getText().toString())) {
+                        if (!TextUtils.isEmpty(editText.getText().toString())) {
                             login(dialog, editText);
                         } else {
                             Toast.makeText(activity, R.string.app_input_right_id, Toast.LENGTH_LONG).show();
