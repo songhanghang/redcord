@@ -153,7 +153,7 @@ public class LiveWallpaper extends WallpaperService {
         @Override
         public void onDestroy() {
             super.onDestroy();
-            locationClient.onDestroy();
+            stopLocation();
         }
 
         private void doDraw() {
