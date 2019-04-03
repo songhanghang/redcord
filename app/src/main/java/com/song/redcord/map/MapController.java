@@ -410,7 +410,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                     int dur = (int) ridePath.getDuration();
                     her.setRideInfo(AMapUtil.getFriendlyLength(dis) + " | " + AMapUtil.getFriendlyTime(dur));
                 } else {
-                    her.setWorkInfo(activity.getString(R.string.app_nav_ride_err));
+                    her.setRideInfo(activity.getString(R.string.app_nav_ride_err));
                 }
                 her.notifyChange();
             }
