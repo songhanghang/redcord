@@ -2,6 +2,9 @@ package com.song.redcord.bean;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.Bindable;
 import android.text.TextUtils;
 import android.view.View;
@@ -68,7 +71,19 @@ public class Her extends Lover {
     }
 
     public void onNavClick(View view) {
-        JumpUtil.startNav(view.getContext(), location.getLatitude(), location.getLongitude());
+        final Context context = view.getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(new String[]{"高德地图", "百度地图"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    JumpUtil.startNavAmap(context, location.getLatitude(), location.getLongitude());
+                } else {
+                    JumpUtil.startNavBaiduMap(context, location.getLatitude(), location.getLongitude());
+                }
+            }
+        });
+        builder.create().show();
     }
 
     public void onForbackClick(View view) {

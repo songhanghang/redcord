@@ -6,48 +6,43 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.didikee.donate.AlipayDonate;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Toast;
 
+import com.amap.api.maps.model.LatLng;
 import com.song.redcord.App;
 import com.song.redcord.LiveWallpaper;
 
-import java.util.List;
 
 public class JumpUtil {
-    public static void startNav(Context context, double lat, double lon) {
+
+    public static void startNavAmap(Context context, double lat, double lon) throws ActivityNotFoundException {
         try {
-            navAmap(context, lat, lon);
+            String uri = String.format("amapuri://route/plan/?dlat=%s&dlon=%s&dname=你的TA&dev=0&t=0", lat, lon);
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.VIEW");
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.setData(Uri.parse(uri));
+            intent.setPackage("com.autonavi.minimap");
+            context.startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            try {
-                navBaiduMap(context, lat, lon);
-            } catch (ActivityNotFoundException ex) {
-                Toast.makeText(context, "请下载高德活百度地图！", Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(context, "请下载高德地图！", Toast.LENGTH_LONG).show();
         }
     }
 
-    private static void navAmap(Context context, double lat, double lon) throws ActivityNotFoundException {
-        String uri = String.format("amapuri://route/plan/?dlat=%s&dlon=%s&dname=你的TA&dev=0&t=0", lat, lon);
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.VIEW");
-        intent.addCategory("android.intent.category.DEFAULT");
-        intent.setData(Uri.parse(uri));
-        intent.setPackage("com.autonavi.minimap");
-        context.startActivity(intent);
-    }
-
-    private static void navBaiduMap(Context context, double lat, double lon) throws ActivityNotFoundException {
-        String uri = String.format("baidumap://map/direction?destination=" + "%s,%s&mode=driving&src=com.song.redcord", lat, lon);
-        Intent intent = new Intent();
-        intent.setData(Uri.parse(uri));
-        context.startActivity(intent);
+    public static void startNavBaiduMap(Context context, double lat, double lon) throws ActivityNotFoundException {
+        try {
+            LatLng latLng = gd2bd(lat, lon);
+            String uri = String.format("baidumap://map/direction?destination=" + "%s,%s&mode=driving&src=com.song.redcord", latLng.latitude, latLng.longitude);
+            Intent intent = new Intent();
+            intent.setData(Uri.parse(uri));
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "请下载百度地图！", Toast.LENGTH_LONG).show();
+        }
     }
 
     public static void startShare(Context context, String content) {
@@ -96,7 +91,7 @@ public class JumpUtil {
     }
 
     // 判断是否安装指定app
-    private static boolean isInstallApp(Context context, String packageName){
+    private static boolean isInstallApp(Context context, String packageName) {
         if (TextUtils.isEmpty(packageName))
             return false;
 
@@ -106,5 +101,15 @@ public class JumpUtil {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    private static LatLng gd2bd(double latitude, double longitude) {
+        double x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+        double x = longitude, y = latitude;
+        double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+        double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+        double bd_lng = z * Math.cos(theta) + 0.0065;
+        double bd_lat = z * Math.sin(theta) + 0.006;
+        return new LatLng(bd_lat, bd_lng);
     }
 }
