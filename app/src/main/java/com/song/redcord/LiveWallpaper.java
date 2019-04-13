@@ -41,8 +41,8 @@ public class LiveWallpaper extends WallpaperService {
     private class RedcordEngine extends Engine implements AMapLocationListener {
         private static final int MAX_DISTANCE = 600;
         private static final int OFFSET = 10;
-        private static final long START_LOCATION_INTERVAL = 60 * 1000 * 5;
-        private static final long LOCATION_INTERVAL = 60000;
+        private static final long START_LOCATION_INTERVAL = 30000;
+        private static final long LOCATION_INTERVAL = 30000;
         private static final long STOP_DELAY_INTERVAL =  2000;
         private int leftX, leftY;
         private int rightX, rightY;
