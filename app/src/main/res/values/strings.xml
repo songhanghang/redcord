@@ -21,6 +21,7 @@
     <string name="app_input_you_id">请输入您的ID</string>
     <string name="app_input_her_id">请输入要绑定的ID</string>
     <string name="app_input_right_id">请输入正确ID</string>
+    <string name="app_input_not_allow_myself">无法绑定自己的ID</string>
     <string name="app_pull_err">抱歉,未找到Ta</string>
     <string name="app_nav_drive_err">不知哪里出了问题...</string>
     <string name="app_nav_work_err">可能太远了, 要不换个交通工具?</string>

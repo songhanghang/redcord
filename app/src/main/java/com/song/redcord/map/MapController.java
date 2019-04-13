@@ -185,27 +185,31 @@ public class MapController implements AMapLocationListener, Application.Activity
                     public void onClick(final DialogInterface dialog, int which) {
                         String id = editText.getText().toString();
                         if (!TextUtils.isEmpty(id)) {
-                            final Her her = new Her(id);
-                            binding.setHer(her);
-                            her.pull(new RequestCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    if (her.isSingle()) {
-                                        me.setLover(her);
-                                        me.push();
-                                        her.push();
-                                        refreshView(me, her);
-                                        dialog.dismiss();
-                                    } else {
-                                        Toast.makeText(activity, R.string.app_her_not_alone, Toast.LENGTH_LONG).show();
+                            if (id.equals(me.id)) {
+                                Toast.makeText(activity, R.string.app_input_not_allow_myself, Toast.LENGTH_LONG).show();
+                            } else {
+                                final Her her = new Her(id);
+                                binding.setHer(her);
+                                her.pull(new RequestCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        if (her.isSingle()) {
+                                            me.setLover(her);
+                                            me.push();
+                                            her.push();
+                                            refreshView(me, her);
+                                            dialog.dismiss();
+                                        } else {
+                                            Toast.makeText(activity, R.string.app_her_not_alone, Toast.LENGTH_LONG).show();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onFail() {
-                                    Toast.makeText(activity, R.string.app_link_err, Toast.LENGTH_LONG).show();
-                                }
-                            });
+                                    @Override
+                                    public void onFail() {
+                                        Toast.makeText(activity, R.string.app_link_err, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
                         } else {
                             Toast.makeText(activity, R.string.app_input_right_id, Toast.LENGTH_LONG).show();
                         }
