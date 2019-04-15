@@ -168,13 +168,13 @@ public class LiveWallpaper extends WallpaperService {
                 if (canvas == null) {
                     return;
                 }
-                // Draw background
+                // 画背景
                 float f = (leftY - centerY + MAX_DISTANCE) / (float) (2 * MAX_DISTANCE);
                 f = Math.min(1 , Math.max(f, 0));
                 canvas.drawColor(ColorUtil.getColor(f));
 
                 paint.setColor(Color.WHITE);
-                //画4个点
+                // 画点
                 canvas.drawCircle(startX, startY, 10, paint);
                 canvas.drawCircle(endX, endY, 10, paint);
 
@@ -186,11 +186,11 @@ public class LiveWallpaper extends WallpaperService {
                     canvas.rotate(45);
                     canvas.drawText(her.getLineDistance(), 0, -10, tipsTextPaint);
                     canvas.restore();
+                    int bottomMargin = ScreenUtil.getHeight(App.get()) - 24;
+                    canvas.drawText(her.getAddress(), centerX, bottomMargin, tipsTextPaint);
                 }
 
-                //绘制连线
-
-                //画二阶贝塞尔曲线
+                // 画二阶贝塞尔曲线
                 paint.setColor(getColor(R.color.colorAccent));
                 paint.setStyle(Paint.Style.STROKE);
                 Path path = new Path();
@@ -258,9 +258,6 @@ public class LiveWallpaper extends WallpaperService {
             lover.pull(null);
         }
 
-        /**
-         * 保证每次start后，有2s的定位时间
-         */
         private void startLocation() {
             if (System.currentTimeMillis() - lastLocationTime < START_LOCATION_INTERVAL) {
                 return;
