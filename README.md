@@ -1,4 +1,3 @@
-![图片](https://wx1.sinaimg.cn/mw690/006292TQly1g25r4ipgbkg30bd0om4qr.gif)
 # Redcord
 >红绳-连接你我
 [https://github.com/songhanghang/redcord](https://github.com/songhanghang/redcord)
@@ -33,6 +32,8 @@ Android现在并没有很好的解决方案，强大如微信也必须手动开�
 Coding....
 
 emmmmm....
+
+![图片](https://wx1.sinaimg.cn/mw690/006292TQly1g25r4ipgbkg30bd0om4qr.gif)
 
 ### 下载
 [https://www.pgyer.com/O2dK](https://www.pgyer.com/O2dK)
