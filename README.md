@@ -37,6 +37,7 @@ emmmmm....
 [https://www.pgyer.com/O2dK](https://www.pgyer.com/O2dK)
 
 ### 软件功能介绍
+![图片](https://wx3.sinaimg.cn/mw690/006292TQly1g25qcc2eecg30d40sgb2a.gif)
 ![图片](http://wx3.sinaimg.cn/large/006292TQly1g1m6kq5rbuj30p10hq45s.jpg)
 
 #### 注册与登录
