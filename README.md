@@ -36,7 +36,7 @@ emmmmm....
 ![图片](https://wx1.sinaimg.cn/mw690/006292TQly1g25r4ipgbkg30bd0om4qr.gif)
 
 ### 下载
-[https://www.pgyer.com/O2dK](https://www.pgyer.com/O2dK)
+[https://www.coolapk.com/apk/com.song.redcord?from=singlemessage](https://www.coolapk.com/apk/com.song.redcord?from=singlemessage)
 
 ### 软件功能介绍
 
