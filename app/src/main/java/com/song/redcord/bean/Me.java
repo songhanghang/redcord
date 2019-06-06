@@ -4,18 +4,8 @@ import com.amap.api.location.AMapLocation;
 public class Me extends Lover {
 
     public Me(String id) {
-        super(id);
+        super(id, false, true);
         setName("我");
-    }
-
-    @Override
-    public boolean allowPullLocation() {
-        return false;
-    }
-
-    @Override
-    public boolean allowPushLocation() {
-        return true;
     }
 
     public void setLocation(AMapLocation aMapLocation) {

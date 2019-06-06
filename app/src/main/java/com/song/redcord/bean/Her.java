@@ -20,7 +20,7 @@ public class Her extends Lover {
     private String rideInfo;
 
     public Her(String id) {
-        super(id);
+        super(id, true, false);
         setName("TA");
     }
 
@@ -54,16 +54,6 @@ public class Her extends Lover {
         LatLng latYou = new LatLng(location.getLatitude(), location.getLongitude());
         float dis = AMapUtils.calculateLineDistance(latMe, latYou);
         return AMapUtil.getFriendlyLength((int) dis);
-    }
-
-    @Override
-    public boolean allowPullLocation() {
-        return true;
-    }
-
-    @Override
-    public boolean allowPushLocation() {
-        return false;
     }
 
     public boolean isNull() {

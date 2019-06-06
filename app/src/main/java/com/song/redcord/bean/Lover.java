@@ -11,6 +11,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.GetCallback;
 import com.song.redcord.interfaces.RequestCallback;
+import com.song.redcord.util.DateUtil;
 import com.song.redcord.util.TAG;
 
 /**
@@ -29,9 +30,15 @@ public abstract class Lover extends BaseObservable implements DataServer {
     private String loverId;
     private String name;
     private String address;
+    private String updateTime;
+    private boolean allowPullLocation;
+    private boolean allowPushLocation;
 
-    public Lover(String id) {
+
+    public Lover(String id, boolean allowPullLocation, boolean allowPushLocation) {
         this.id = id;
+        this.allowPullLocation = allowPullLocation;
+        this.allowPushLocation = allowPushLocation;
     }
 
     @Bindable
@@ -54,6 +61,10 @@ public abstract class Lover extends BaseObservable implements DataServer {
         this.address = address;
     }
 
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
     public void setLover(@NonNull Lover lover) {
         // 我中有你，你中有我
         this.lover = lover;
@@ -70,10 +81,6 @@ public abstract class Lover extends BaseObservable implements DataServer {
         return lover;
     }
 
-    public abstract boolean allowPullLocation();
-
-    public abstract boolean allowPushLocation();
-
     @Override
     public void pull(final RequestCallback callback) {
         AVObject love = AVObject.createWithoutData(AV_CLASS, id);
@@ -82,13 +89,15 @@ public abstract class Lover extends BaseObservable implements DataServer {
             public void done(AVObject object, AVException e) {
                 if (e == null) {
                     address = object.getString(AV_KEY_ADDRESS);
+                    updateTime = DateUtil.getUpdateDateString(object.getUpdatedAt());
+                    loverId = object.getString(AV_KEY_LOVE_ID);
                     Log.i(TAG.V, Lover.this.getClass() + " +++++ pull id "+  id + " loveid " + loverId);
 
-                    loverId = object.getString(AV_KEY_LOVE_ID);
-                    if (allowPullLocation()) {
+                    if (allowPullLocation) {
                         location.setLatitude(object.getDouble(AV_KEY_LAT));
                         location.setLongitude(object.getDouble(AV_KEY_LON));
                     }
+
                     notifyChange();
                     if (callback != null)
                         callback.onSuccess();
@@ -109,7 +118,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
         if (!TextUtils.isEmpty(loverId)) {
             love.put(AV_KEY_LOVE_ID, loverId);
         }
-        if (allowPushLocation()) {
+        if (allowPushLocation) {
             love.put(AV_KEY_LAT, location.getLatitude());
             love.put(AV_KEY_LON, location.getLongitude());
         }

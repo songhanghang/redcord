@@ -184,7 +184,8 @@ public class LiveWallpaper extends WallpaperService {
                     canvas.save();
                     canvas.translate(centerX, centerY);
                     canvas.rotate(45);
-                    canvas.drawText(her.getLineDistance(), 0, -10, tipsTextPaint);
+                    canvas.drawText("Ta最后更新 | " + her.getLineDistance(), 0, -10, tipsTextPaint);
+                    canvas.drawText(her.getUpdateTime(), 0, 30, tipsTextPaint);
                     canvas.restore();
                     int bottomMargin = ScreenUtil.getHeight(App.get()) - 24;
                     canvas.drawText(her.getAddress(), centerX, bottomMargin, tipsTextPaint);
