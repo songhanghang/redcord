@@ -1,3 +1,6 @@
+非常抱歉，因近期政策原因，储存服务必须备案，费用不低，所以10月1号起有可能随时停服...
+
+在此祝各位幸福哦！
 # Redcord
 >红绳-连接你我
 [https://github.com/songhanghang/redcord](https://github.com/songhanghang/redcord)
