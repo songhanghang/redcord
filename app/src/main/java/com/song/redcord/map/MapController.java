@@ -309,10 +309,10 @@ public class MapController implements AMapLocationListener, Application.Activity
     /**
      * 标记我俩
      */
-    private void markUs(Lover me, Lover you) {
+    private void markUs(Lover me, Lover her) {
         aMap.clear();
         LatLng melatl = new LatLng(me.location.getLatitude(), me.location.getLongitude());
-        LatLng youlatl = new LatLng(you.location.getLatitude(), you.location.getLongitude());
+        LatLng youlatl = new LatLng(her.location.getLatitude(), her.location.getLongitude());
         MarkerOptions meOption = new MarkerOptions().icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 .position(melatl)
@@ -323,7 +323,7 @@ public class MapController implements AMapLocationListener, Application.Activity
                 .defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 .position(youlatl)
                 .draggable(false)
-                .title(you.getName());
+                .title(her.getName());
         aMap.addMarker(youOption).showInfoWindow();
     }
 

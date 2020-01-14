@@ -1,11 +1,15 @@
 package com.song.redcord;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.location.Location;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -15,10 +19,17 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps.AMapUtils;
+import com.amap.api.maps.model.LatLng;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.song.redcord.bean.Her;
 import com.song.redcord.bean.Lover;
 import com.song.redcord.bean.Me;
 import com.song.redcord.interfaces.RequestCallback;
+import com.song.redcord.map.AMapUtil;
 import com.song.redcord.util.ColorUtil;
 import com.song.redcord.util.Pref;
 import com.song.redcord.util.ScreenUtil;
@@ -57,7 +68,6 @@ public class LiveWallpaper extends WallpaperService {
         private boolean isTouch;
         private boolean isUp;
         private Me me = new Me(Pref.get().getId());
-        private Her her;
         private Handler locationHandler = new Handler();
         private AMapLocationClient locationClient;
         private AMapLocationClientOption locationOption = null;
@@ -81,6 +91,12 @@ public class LiveWallpaper extends WallpaperService {
                 }
                 rightY = 2 * centerY - leftY;
                 doDraw();
+            }
+        };
+        private final SimpleTarget<Bitmap> mapBitmapTarget = new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
             }
         };
 
@@ -113,7 +129,7 @@ public class LiveWallpaper extends WallpaperService {
             me.pull(new RequestCallback() {
                 @Override
                 public void onSuccess() {
-                    her = new Her(me.getLoverId());
+                    Her her = new Her(me.getLoverId());
                     me.setLover(her);
                     her.pull(new RequestCallback() {
                         @Override
@@ -180,6 +196,7 @@ public class LiveWallpaper extends WallpaperService {
 
 
                 // 画距离
+                Her her = me.getLover();
                 if (her != null && !TextUtils.isEmpty(her.getLineDistance())) {
                     canvas.save();
                     canvas.translate(centerX, centerY);
@@ -241,7 +258,7 @@ public class LiveWallpaper extends WallpaperService {
         }
 
         @Override
-        public void onLocationChanged(AMapLocation location) {
+        public void onLocationChanged(final AMapLocation location) {
             Log.i(TAG.V, " ~~~~~~~~~~ 壁纸定位完成 ~~~~~~~~~~~ " + location);
 
             // 位置改变
@@ -251,12 +268,22 @@ public class LiveWallpaper extends WallpaperService {
                 me.push();
             }
 
-            final Lover lover = me.getLover();
-            if (lover == null) {
+            final Her her = me.getLover();
+            if (her == null) {
                 return;
             }
 
-            lover.pull(null);
+            her.pull(new RequestCallback() {
+                @Override
+                public void onSuccess() {
+                    her.adjustDownloadMapImg(LiveWallpaper.this, mapBitmapTarget);
+                }
+
+                @Override
+                public void onFail() {
+
+                }
+            });
         }
 
         private void startLocation() {

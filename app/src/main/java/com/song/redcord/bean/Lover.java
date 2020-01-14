@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.amap.api.maps.model.AMapGLOverlay;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.GetCallback;
@@ -18,7 +19,7 @@ import com.song.redcord.util.TAG;
  * 我的位置只上传不下载
  * Ta的位置只下载不上传
  */
-public abstract class Lover extends BaseObservable implements DataServer {
+public abstract class Lover<T extends Lover> extends BaseObservable implements DataServer {
     public static final String AV_CLASS = "LOVE";
     public static final String AV_KEY_ADDRESS = "address";
     public static final String AV_KEY_LOVE_ID = "love_id";
@@ -26,7 +27,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
     public static final String AV_KEY_LON = "lon";
     public final String id;
     public final Location location = new Location("");
-    private Lover lover;
+    private T lover;
     private String loverId;
     private String name;
     private String address;
@@ -67,7 +68,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
 
     public void setLover(@NonNull Lover lover) {
         // 我中有你，你中有我
-        this.lover = lover;
+        this.lover = (T) lover;
         this.loverId = lover.id;
         lover.lover = this;
         lover.loverId = this.id;
@@ -77,7 +78,7 @@ public abstract class Lover extends BaseObservable implements DataServer {
         return loverId;
     }
 
-    public Lover getLover() {
+    public T getLover() {
         return lover;
     }
 

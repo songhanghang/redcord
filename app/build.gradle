@@ -48,5 +48,7 @@ dependencies {
 
     implementation 'cn.leancloud.android:avoscloud-sdk:4.7.9'
     implementation 'com.github.didikee:AndroidDonate:0.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
 }

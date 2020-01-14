@@ -6,18 +6,27 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.Bindable;
+import android.graphics.Bitmap;
+import android.location.Location;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.song.redcord.LiveWallpaper;
 import com.song.redcord.map.AMapUtil;
 import com.song.redcord.map.JumpUtil;
 
-public class Her extends Lover {
+public class Her extends Lover<Me> {
+    private static final String IMG_URL = "https://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=13&size=500*300&markers=mid,,A:%s,%s&key=949303656119990ff7c30835f1b235f0";
+
     private String driveInfo;
     private String workInfo;
     private String rideInfo;
+    private final Location lastLocation = new Location("");
 
     public Her(String id) {
         super(id, true, false);
@@ -46,6 +55,33 @@ public class Her extends Lover {
 
     public void setRideInfo(String rideInfo) {
         this.rideInfo = rideInfo;
+    }
+
+    public String getMapImgUrl() {
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+        return String.format(IMG_URL, longitude, latitude, longitude, latitude);
+    }
+
+    public void adjustDownloadMapImg(Context context, SimpleTarget<Bitmap> target) {
+        if (isMove()) {
+            RequestManager manager = Glide.with(context);
+            manager.clear(target);
+            manager.asBitmap().load(getMapImgUrl()).into(target);
+        }
+    }
+
+    private boolean isMove() {
+        LatLng latLast = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+        LatLng latCur = new LatLng(location.getLatitude(), location.getLongitude());
+        float dis = AMapUtils.calculateLineDistance(latLast, latCur);
+        if (dis > 5) {
+            return true;
+        }
+
+        lastLocation.setLatitude(location.getLatitude());
+        lastLocation.setLongitude(location.getLongitude());
+        return false;
     }
 
     @Bindable

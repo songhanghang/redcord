@@ -1,7 +1,7 @@
 package com.song.redcord.bean;
 import com.amap.api.location.AMapLocation;
 
-public class Me extends Lover {
+public class Me extends Lover<Her> {
 
     public Me(String id) {
         super(id, false, true);
