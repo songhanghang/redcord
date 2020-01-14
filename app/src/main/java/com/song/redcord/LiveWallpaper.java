@@ -5,11 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.location.Location;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,17 +21,11 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.AMapUtils;
-import com.amap.api.maps.model.LatLng;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.song.redcord.bean.Her;
-import com.song.redcord.bean.Lover;
 import com.song.redcord.bean.Me;
 import com.song.redcord.interfaces.RequestCallback;
-import com.song.redcord.map.AMapUtil;
 import com.song.redcord.util.ColorUtil;
 import com.song.redcord.util.Pref;
 import com.song.redcord.util.ScreenUtil;
@@ -60,8 +56,9 @@ public class LiveWallpaper extends WallpaperService {
         private int centerX, centerY;
         private int startX, startY;
         private int endX, endY;
+        private int mapStartX, mapStartY;
+        private int mapEndX, mapEndY;
         private Paint paint;
-
         private Paint tipsTextPaint;
 
         private boolean isVisible;
@@ -70,7 +67,7 @@ public class LiveWallpaper extends WallpaperService {
         private Me me = new Me(Pref.get().getId());
         private Handler locationHandler = new Handler();
         private AMapLocationClient locationClient;
-        private AMapLocationClientOption locationOption = null;
+        private AMapLocationClientOption locationOption;
         private AMapLocation aMapLocation;
         private long lastLocationTime;
 
@@ -93,20 +90,21 @@ public class LiveWallpaper extends WallpaperService {
                 doDraw();
             }
         };
+        private RoundedBitmapDrawable bitmapDrawable;
         private final SimpleTarget<Bitmap> mapBitmapTarget = new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-
+                bitmapDrawable = RoundedBitmapDrawableFactory.create(LiveWallpaper.this.getResources(), resource);
             }
         };
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
+            // 圈和线
             paint = new Paint();
             paint.setAntiAlias(true);
-            paint.setStrokeWidth(10);
-
+            // 文字
             tipsTextPaint = new Paint();
             tipsTextPaint.setAntiAlias(true);
             tipsTextPaint.setColor(Color.WHITE);
@@ -114,7 +112,7 @@ public class LiveWallpaper extends WallpaperService {
             tipsTextPaint.setTextAlign(Paint.Align.CENTER);
             tipsTextPaint.setAntiAlias(true);
             tipsTextPaint.setDither(true);
-
+            // 视图
             centerX = ScreenUtil.getWidth(App.get()) / 2;
             centerY = ScreenUtil.getHeight(App.get()) / 2;
             startX = centerX - 250;
@@ -125,11 +123,16 @@ public class LiveWallpaper extends WallpaperService {
             leftY = centerY - 250;
             rightX = endX;
             rightY = endY - 250;
+            // 地图
+            mapStartX = startX - 100;
+            mapStartY = startY - 100;
+            mapEndX = endX + 100;
+            mapEndY = endY + 100;
 
             me.pull(new RequestCallback() {
                 @Override
                 public void onSuccess() {
-                    Her her = new Her(me.getLoverId());
+                    final Her her = new Her(me.getLoverId());
                     me.setLover(her);
                     her.pull(new RequestCallback() {
                         @Override
@@ -138,6 +141,7 @@ public class LiveWallpaper extends WallpaperService {
                                 me.setLocation(aMapLocation);
                                 me.push();
                             }
+                            her.adjustDownloadMapBitmap(LiveWallpaper.this, mapBitmapTarget);
                         }
 
                         @Override
@@ -189,32 +193,38 @@ public class LiveWallpaper extends WallpaperService {
                 f = Math.min(1 , Math.max(f, 0));
                 canvas.drawColor(ColorUtil.getColor(f));
 
-                paint.setColor(Color.WHITE);
-                // 画点
-                canvas.drawCircle(startX, startY, 10, paint);
-                canvas.drawCircle(endX, endY, 10, paint);
-
+                // 画地图
+                if (bitmapDrawable != null) {
+                    bitmapDrawable.setCornerRadius(20);
+                    bitmapDrawable.setBounds(new Rect(mapStartX, mapStartY, mapEndX, mapEndY));
+                    bitmapDrawable.draw(canvas);
+                }
 
                 // 画距离
                 Her her = me.getLover();
                 if (her != null && !TextUtils.isEmpty(her.getLineDistance())) {
-                    canvas.save();
-                    canvas.translate(centerX, centerY);
-                    canvas.rotate(45);
-                    canvas.drawText("Ta最后更新 | " + her.getLineDistance(), 0, -10, tipsTextPaint);
-                    canvas.drawText(her.getUpdateTime(), 0, 30, tipsTextPaint);
-                    canvas.restore();
-                    int bottomMargin = ScreenUtil.getHeight(App.get()) - 24;
-                    canvas.drawText(her.getAddress(), centerX, bottomMargin, tipsTextPaint);
+                    canvas.drawText("相距 : " + her.getLineDistance() + " | " + her.getUpdateTime(), centerX, mapEndY + 120, tipsTextPaint);
+                    canvas.drawText("位置 : " + her.getAddress(), centerX, mapEndY + 170, tipsTextPaint);
                 }
 
                 // 画二阶贝塞尔曲线
-                paint.setColor(getColor(R.color.colorAccent));
                 paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(10);
+                paint.setColor(getColor(R.color.colorAccent));
                 Path path = new Path();
                 path.moveTo(startX, startY);
                 path.cubicTo(leftX, leftY, rightX, rightY, endX, endY);
                 canvas.drawPath(path, paint);
+
+                // 画点
+                paint.setStyle(Paint.Style.FILL);
+                paint.setStrokeWidth(0);
+                paint.setColor(ColorUtil.getColor(f));
+                canvas.drawCircle(startX, startY, 16, paint);
+                canvas.drawCircle(endX, endY, 16, paint);
+                paint.setColor(Color.WHITE);
+                canvas.drawCircle(startX, startY, 7, paint);
+                canvas.drawCircle(endX, endY, 7, paint);
 
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
@@ -276,7 +286,7 @@ public class LiveWallpaper extends WallpaperService {
             her.pull(new RequestCallback() {
                 @Override
                 public void onSuccess() {
-                    her.adjustDownloadMapImg(LiveWallpaper.this, mapBitmapTarget);
+                    her.adjustDownloadMapBitmap(LiveWallpaper.this, mapBitmapTarget);
                 }
 
                 @Override

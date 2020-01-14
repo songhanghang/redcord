@@ -21,7 +21,7 @@ import com.song.redcord.map.AMapUtil;
 import com.song.redcord.map.JumpUtil;
 
 public class Her extends Lover<Me> {
-    private static final String IMG_URL = "https://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=13&size=500*300&markers=mid,,A:%s,%s&key=949303656119990ff7c30835f1b235f0";
+    private static final String IMG_URL = "https://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=13&size=300*300&markers=mid,,A:%s,%s&key=949303656119990ff7c30835f1b235f0";
 
     private String driveInfo;
     private String workInfo;
@@ -57,13 +57,7 @@ public class Her extends Lover<Me> {
         this.rideInfo = rideInfo;
     }
 
-    public String getMapImgUrl() {
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
-        return String.format(IMG_URL, longitude, latitude, longitude, latitude);
-    }
-
-    public void adjustDownloadMapImg(Context context, SimpleTarget<Bitmap> target) {
+    public void adjustDownloadMapBitmap(Context context, SimpleTarget<Bitmap> target) {
         if (isMove()) {
             RequestManager manager = Glide.with(context);
             manager.clear(target);
@@ -82,6 +76,12 @@ public class Her extends Lover<Me> {
         lastLocation.setLatitude(location.getLatitude());
         lastLocation.setLongitude(location.getLongitude());
         return false;
+    }
+
+    private String getMapImgUrl() {
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+        return String.format(IMG_URL, longitude, latitude, longitude, latitude);
     }
 
     @Bindable
