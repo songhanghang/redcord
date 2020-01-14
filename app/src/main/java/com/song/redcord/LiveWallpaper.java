@@ -203,7 +203,7 @@ public class LiveWallpaper extends WallpaperService {
                 // 画距离
                 Her her = me.getLover();
                 if (her != null && !TextUtils.isEmpty(her.getLineDistance())) {
-                    canvas.drawText("相距 : " + her.getLineDistance() + " | " + her.getUpdateTime(), centerX, mapEndY + 120, tipsTextPaint);
+                    canvas.drawText("相距 : " + her.getLineDistance() + "  |  " + her.getUpdateTime(), centerX, mapEndY + 120, tipsTextPaint);
                     canvas.drawText("位置 : " + her.getAddress(), centerX, mapEndY + 170, tipsTextPaint);
                 }
 
