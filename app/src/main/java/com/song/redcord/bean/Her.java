@@ -21,7 +21,7 @@ import com.song.redcord.map.AMapUtil;
 import com.song.redcord.map.JumpUtil;
 
 public class Her extends Lover<Me> {
-    private static final String IMG_URL = "https://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=13&size=300*300&markers=mid,,A:%s,%s&key=949303656119990ff7c30835f1b235f0";
+    private static final String IMG_URL = "https://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=17&size=300*300&markers=mid,,A:%s,%s&key=949303656119990ff7c30835f1b235f0";
 
     private String driveInfo;
     private String workInfo;
