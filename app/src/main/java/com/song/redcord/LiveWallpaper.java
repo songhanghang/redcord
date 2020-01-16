@@ -46,8 +46,8 @@ public class LiveWallpaper extends WallpaperService {
     }
 
     private class RedcordEngine extends Engine implements AMapLocationListener {
-        private static final int MAX_DISTANCE = 600;
-        private static final int OFFSET = 10;
+        private static final int MAX_DISTANCE = 300;
+        private static final int OFFSET = 5;
         private static final long START_LOCATION_INTERVAL = 30000;
         private static final long LOCATION_INTERVAL = 30000;
         private static final long STOP_DELAY_INTERVAL =  2000;
@@ -63,7 +63,7 @@ public class LiveWallpaper extends WallpaperService {
 
         private boolean isVisible;
         private boolean isTouch;
-        private boolean isUp;
+        private boolean isLeft;
         private Me me = new Me(Pref.get().getId());
         private Handler locationHandler = new Handler();
         private AMapLocationClient locationClient;
@@ -76,17 +76,17 @@ public class LiveWallpaper extends WallpaperService {
             @Override
             public void run() {
 
-                if (leftY < centerY - MAX_DISTANCE) {
-                    isUp = false;
-                } else if (leftY > centerY + MAX_DISTANCE) {
-                    isUp = true;
+                if (leftX < centerX - MAX_DISTANCE) {
+                    isLeft = false;
+                } else if (leftX > centerX + MAX_DISTANCE) {
+                    isLeft = true;
                 }
-                if (isUp) {
-                    leftY -= OFFSET;
+                if (isLeft) {
+                    leftX -= OFFSET;
                 } else {
-                    leftY += OFFSET;
+                    leftX += OFFSET;
                 }
-                rightY = 2 * centerY - leftY;
+                rightX = 2 * centerX - leftX;
                 doDraw();
             }
         };
@@ -115,19 +115,19 @@ public class LiveWallpaper extends WallpaperService {
             // 视图
             centerX = ScreenUtil.getWidth(App.get()) / 2;
             centerY = ScreenUtil.getHeight(App.get()) / 2;
-            startX = centerX - 250;
-            startY = centerY - 250;
-            endX = centerX + 250;
-            endY = centerY + 250;
-            leftX = startX;
-            leftY = centerY - 250;
-            rightX = endX;
-            rightY = endY - 250;
+            startX = centerX;
+            startY = -10;
+            endX = centerX;
+            endY = centerY - 250;
+            leftX = startX - 250;
+            leftY = centerY / 2 - 120;
+            rightX = startX + 250;
+            rightY = leftY;
             // 地图
-            mapStartX = startX - 100;
-            mapStartY = startY - 100;
-            mapEndX = endX + 100;
-            mapEndY = endY + 100;
+            mapStartX = centerX - 350;
+            mapStartY = centerY - 350;
+            mapEndX = centerX + 350;
+            mapEndY = centerY + 350;
 
             me.pull(new RequestCallback() {
                 @Override
@@ -189,7 +189,7 @@ public class LiveWallpaper extends WallpaperService {
                     return;
                 }
                 // 画背景
-                float f = (leftY - centerY + MAX_DISTANCE) / (float) (2 * MAX_DISTANCE);
+                float f = (leftX - centerX + MAX_DISTANCE) / (float) (2 * MAX_DISTANCE);
                 f = Math.min(1 , Math.max(f, 0));
                 canvas.drawColor(ColorUtil.getColor(f));
 
@@ -220,10 +220,8 @@ public class LiveWallpaper extends WallpaperService {
                 paint.setStyle(Paint.Style.FILL);
                 paint.setStrokeWidth(0);
                 paint.setColor(ColorUtil.getColor(f));
-                canvas.drawCircle(startX, startY, 16, paint);
                 canvas.drawCircle(endX, endY, 16, paint);
                 paint.setColor(Color.WHITE);
-                canvas.drawCircle(startX, startY, 7, paint);
                 canvas.drawCircle(endX, endY, 7, paint);
 
             } catch (Exception | OutOfMemoryError e) {
@@ -253,9 +251,7 @@ public class LiveWallpaper extends WallpaperService {
                 case MotionEvent.ACTION_MOVE:
                     isTouch = true;
                     leftX = (int) event.getX();
-                    leftY = (int) event.getY();
                     rightX = 2 * centerX - leftX;
-                    rightY = 2 * centerY - leftY;
                     doDraw();
                     break;
                 case MotionEvent.ACTION_CANCEL:
