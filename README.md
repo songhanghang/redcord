@@ -35,14 +35,14 @@ emmmmm....
 
 ![图片](https://wx2.sinaimg.cn/mw690/006292TQly1gb59mnxaezg30go09enm1.gif)
 
-![图片](https://wx3.sinaimg.cn/mw690/006292TQgy1gb0qio0w64g307t0gy1kz.gif)
-
 ### 下载
 ![图片](https://wx4.sinaimg.cn/mw690/006292TQly1g3ac6bxnz9j30440440b9.jpg)
 
 [https://www.coolapk.com/apk/com.song.redcord](https://www.coolapk.com/apk/com.song.redcord)
 
 ### 软件功能介绍
+
+![图片](https://wx3.sinaimg.cn/mw690/006292TQgy1gb0qio0w64g307t0gy1kz.gif)
 
 #### 注册与登录
 注册不需要手机号,不需要邮箱（不会上传你的隐私），直接点击注册即可，注册成功后会生成你的ID, 显示在屏幕的左上角，这是你以后登录的唯一凭证（注意保密），注册成功后，需要配对TA的ID, 才能使用，也可以发送自己ID给Ta, 让对方完成配对。配对完成请及时在详情页备份两人Id。
