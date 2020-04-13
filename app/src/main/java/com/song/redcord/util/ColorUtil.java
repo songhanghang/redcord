@@ -1,6 +1,7 @@
 package com.song.redcord.util;
 
 import android.animation.ArgbEvaluator;
+import android.graphics.Color;
 
 import com.song.redcord.App;
 import com.song.redcord.R;
@@ -34,6 +35,6 @@ public class ColorUtil {
     }
 
     public static int getNightColor() {
-        return colors[2][1];
+        return Color.BLACK;
     }
 }
