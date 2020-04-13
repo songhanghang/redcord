@@ -6,7 +6,7 @@ android {
         applicationId "com.song.redcord"
         minSdkVersion 23
         targetSdkVersion 26
-        versionCode 3
+        versionCode 4
         versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {

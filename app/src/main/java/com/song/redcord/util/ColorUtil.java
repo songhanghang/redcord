@@ -26,10 +26,14 @@ public class ColorUtil {
         int h = calendar.get(Calendar.HOUR_OF_DAY);
         if (h >= 7 && h <= 12) { // 上午蓝
             return (int) rgbEvaluator.evaluate(fraction, colors[0][0], colors[0][1]);
-        } else if (h > 12 && h <= 20) { // 下午绿
+        } else if (h > 12 && h <= 18) { // 下午绿
             return (int) rgbEvaluator.evaluate(fraction, colors[1][0], colors[1][1]);
         } else { // 晚上灰
             return (int) rgbEvaluator.evaluate(fraction, colors[2][0], colors[2][1]);
         }
+    }
+
+    public static int getNightColor() {
+        return colors[2][1];
     }
 }

@@ -1,8 +1,11 @@
 package com.song.redcord;
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -39,6 +42,12 @@ import com.song.redcord.util.TAG;
  * https://lbs.amap.com/api/android-location-sdk/guide/android-location/getlocation
  */
 public class LiveWallpaper extends WallpaperService {
+    private static final ColorMatrixColorFilter NIGHT_COLOR_FILTER = new ColorMatrixColorFilter(new ColorMatrix(new float[]{
+        1 / 2f, 1 / 2f, 1 / 2f, 0, 0,
+        1 / 3f, 1 / 3f, 1 / 3f, 0, 0,
+        1 / 4f, 1 / 4f, 1 / 4f, 0, 0,
+        0, 0, 0, 1, 0,
+    }));
 
     @Override
     public Engine onCreateEngine() {
@@ -188,13 +197,28 @@ public class LiveWallpaper extends WallpaperService {
                 if (canvas == null) {
                     return;
                 }
+
+                int curMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                boolean night = curMode == Configuration.UI_MODE_NIGHT_YES;
+                int bgColor;
+                if (night) {
+                    bgColor = ColorUtil.getNightColor();
+                } else {
+                    float f = (leftX - centerX + MAX_DISTANCE) / (float) (2 * MAX_DISTANCE);
+                    f = Math.min(1 , Math.max(f, 0));
+                    bgColor = ColorUtil.getColor(f);
+                }
+
                 // 画背景
-                float f = (leftX - centerX + MAX_DISTANCE) / (float) (2 * MAX_DISTANCE);
-                f = Math.min(1 , Math.max(f, 0));
-                canvas.drawColor(ColorUtil.getColor(f));
+                canvas.drawColor(bgColor);
 
                 // 画地图
                 if (bitmapDrawable != null) {
+                    if (night) {
+                        bitmapDrawable.setColorFilter(NIGHT_COLOR_FILTER);
+                    } else {
+                        bitmapDrawable.clearColorFilter();
+                    }
                     bitmapDrawable.setCornerRadius(20);
                     bitmapDrawable.setBounds(new Rect(mapStartX, mapStartY, mapEndX, mapEndY));
                     bitmapDrawable.draw(canvas);
@@ -219,7 +243,7 @@ public class LiveWallpaper extends WallpaperService {
                 // 画点
                 paint.setStyle(Paint.Style.FILL);
                 paint.setStrokeWidth(0);
-                paint.setColor(ColorUtil.getColor(f));
+                paint.setColor(bgColor);
                 canvas.drawCircle(endX, endY, 16, paint);
                 paint.setColor(Color.WHITE);
                 canvas.drawCircle(endX, endY, 7, paint);
