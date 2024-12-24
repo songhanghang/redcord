@@ -1,4 +1,7 @@
 # Redcord
+欢迎加我WX: songhanghanghang 
+计划重启该项目
+
 >红绳-连接你我
 [https://github.com/songhanghang/redcord](https://github.com/songhanghang/redcord)
 
